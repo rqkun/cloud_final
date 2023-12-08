@@ -41,22 +41,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                  <a class="nav-link" href="home">HOME</a>
+                  <a class="nav-link" href="/add">ADD PRODUCT</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="about">ABOUT</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="product">PRODUCTS</a>
-                </li>
-                <li class="nav-item">
-                  <div class="search-container">
-                    <form action='/search' method='POST'>
-                      <input id="searchBox" name="searchBox" type="text" placeholder="Search.." href="/search">
-                      <button type="submit" value="Search"><i class="fa fa-search"></i></button>
-                    </form>
-                  </div>
-                  
+                  <a class="nav-link" href="/remove">REMOVE PRODUCT</a>
                 </li>
                 {% if not loggedIn %}
                 <li class="nav-item active">

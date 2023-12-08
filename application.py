@@ -4,12 +4,15 @@ from flask import (
     render_template,
     url_for,
     session,
-    redirect
+    redirect,
+    make_response,
+    jsonify
 )
 import mysql.connector
 import hashlib
 import os
 from werkzeug.utils import secure_filename
+import time
 
 application = Flask(__name__,static_url_path='/static')
 
@@ -45,6 +48,8 @@ def getLoginDetails():
     conn.close()
     return (loggedIn, firstName, noOfItems)
 
+# Main page
+# DONE
 @application.route('/')
 def index():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -57,6 +62,36 @@ def index():
     itemData = parse(itemData)
     return render_template('index.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
+@application.route('/admin')
+def administrator():
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
+    itemData = parse(itemData)
+    return render_template('admin.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+
+# Serach
+# DONE
+@application.route('/search', methods=['POST'])
+def search():
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    itemName = request.form['searchBox']
+    print("----------------------")
+    print(itemName)
+    print("----------------------")
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
+        itemData = cur.fetchall()
+    itemData = parse(itemData)
+    return render_template('searchResult.html', data=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+
+# View product
+# DONE
 @application.route('/product')
 def product():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -67,13 +102,42 @@ def product():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     itemData = parse(itemData)
+
     return render_template('product.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
+""" 
+# Infinite load
+@application.route('/load')
+def load():
+    quantity = 10
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
+    itemData = parse(itemData)
+
+    time.sleep(1)
+
+    if request.args:
+        counter = int(request.args.get("c"))
+        
+
+        if counter == 0:
+            res = make_response(jsonify(itemData[0:quantity]), 200)
+        elif counter == len(itemData):
+            res = make_response(jsonify({}), 200)
+        else:
+            res = make_response(jsonify(itemData[counter : counter + quantity]), 200)
+            
+    return res """
 
 @application.route('/home')
 def home():
     return redirect("/")
 
+# Dunno
 @application.route('/about')
 def about():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -86,9 +150,10 @@ def about():
     itemData = parse(itemData)
     return render_template('about.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
-
+# Add item
+# DONE
 @application.route("/add")
-def admin():
+def addProduct():
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
         cur.execute("SELECT categoryId, name FROM categories")
@@ -109,7 +174,8 @@ def addItem():
         image = request.files['image']
         if image and allowed_file(image.filename):
             filename = secure_filename(image.filename)
-            image.save(os.path.join(application.config['UPLOAD_FOLDER'], filename))
+            basedir = os.path.abspath(os.path.dirname(__file__))
+            image.save(os.path.join(basedir, application.config['UPLOAD_FOLDER'], filename))
         imagename = filename
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             try:
@@ -122,20 +188,36 @@ def addItem():
                 conn.rollback()
         conn.close()
         print(msg)
-        return redirect(url_for('index'))
+        return redirect(url_for('administrator'))
 
+# Remove item
 @application.route("/remove")
 def remove():
+    loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        data = cur.fetchall()
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
+    itemData = parse(itemData)
+
+    return render_template('remove.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+
+@application.route("/productDescriptionForRemove")
+def productDescriptionForRemove():
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    productId = request.args.get('removeProductId')
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = %s', (productId, ))
+        productData = cur.fetchone()
     conn.close()
-    return render_template('remove.html', data=data)
+    return render_template("productDescriptionForRemove.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
 
 @application.route("/removeItem")
 def removeItem():
-    productId = request.args.get('productId')
+    productId = request.args.get('removedProductId')
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         try:
             cur = conn.cursor()
@@ -147,8 +229,10 @@ def removeItem():
             msg = "Error occured"
     conn.close()
     print(msg)
-    return redirect(url_for('index'))
+    return redirect(url_for('remove'))
 
+# Display item by category
+# DONE
 @application.route("/displayCategory")
 def displayCategory():
         loggedIn, firstName, noOfItems = getLoginDetails()
@@ -162,13 +246,22 @@ def displayCategory():
         data = parse(data)
         return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryName=categoryName)
 
+# View profile
+# DONE
 @application.route("/account/profile")
 def profileHome():
     if 'email' not in session:
         return redirect(url_for('index'))
     loggedIn, firstName, noOfItems = getLoginDetails()
-    return render_template("profileHome.html", loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT userId, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone FROM users WHERE email = %s", (session['email'], ))
+        profileData = cur.fetchone()
+    conn.close()
+    return render_template("profileHome.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
+# Update profile
+# DONE
 @application.route("/account/profile/edit")
 def editProfile():
     if 'email' not in session:
@@ -181,6 +274,34 @@ def editProfile():
     conn.close()
     return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
+@application.route("/updateProfile", methods=["GET", "POST"])
+def updateProfile():
+    if request.method == 'POST':
+        email = request.form['email']
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        address1 = request.form['address1'] 
+        address2 = request.form['address2']
+        zipcode = request.form['zipcode']
+        city = request.form['city']
+        state = request.form['state']
+        country = request.form['country']
+        phone = request.form['phone']
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+                try:
+                    cur = conn.cursor()
+                    cur.execute('UPDATE users SET firstName = %s, lastName = %s, address1 = %s, address2 = %s, zipcode = %s, city = %s, state = %s, country = %s, phone = %s WHERE email = %s', (firstName, lastName, address1, address2, zipcode, city, state, country, phone, email))
+
+                    conn.commit()
+                    msg = "Saved Successfully"
+                except:
+                    conn.rollback()
+                    msg = "Error occured"
+        conn.close()
+        return redirect(url_for('editProfile'))
+
+# Change password
+# DONE - redirect to profile page if needed
 @application.route("/account/profile/changePassword", methods=["GET", "POST"])
 def changePassword():
     if 'email' not in session:
@@ -210,32 +331,9 @@ def changePassword():
     else:
         return render_template("changePassword.html")
 
-@application.route("/updateProfile", methods=["GET", "POST"])
-def updateProfile():
-    if request.method == 'POST':
-        email = request.form['email']
-        firstName = request.form['firstName']
-        lastName = request.form['lastName']
-        address1 = request.form['address1']
-        address2 = request.form['address2']
-        zipcode = request.form['zipcode']
-        city = request.form['city']
-        state = request.form['state']
-        country = request.form['country']
-        phone = request.form['phone']
-        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-                try:
-                    cur = conn.cursor()
-                    cur.execute('UPDATE users SET firstName = %s, lastName = %s, address1 = %s, address2 = %s, zipcode = %s, city = %s, state = %s, country = %s, phone = %s WHERE email = %s', (firstName, lastName, address1, address2, zipcode, city, state, country, phone, email))
-
-                    conn.commit()
-                    msg = "Saved Successfully"
-                except:
-                    conn.rollback()
-                    msg = "Error occured"
-        conn.close()
-        return redirect(url_for('editProfile'))
-
+# Login
+# Admin: admin@admin.com   -   12345asd
+# DONE
 @application.route("/loginForm")
 def loginForm():
     if 'email' in session:
@@ -250,11 +348,16 @@ def login():
         password = request.form['password']
         if is_valid(email, password):
             session['email'] = email
-            return redirect(url_for('index'))
+            if is_admin(email):
+                return redirect(url_for('administrator'))
+            else: 
+                return redirect(url_for('index'))
         else:
             error = 'Invalid UserId / Password'
             return render_template('login.html', error=error)
 
+# View product detail
+# DONE
 @application.route("/productDescription")
 def productDescription():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -266,6 +369,8 @@ def productDescription():
     conn.close()
     return render_template("productDescription.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
 
+# Add item to cart
+# DONE
 @application.route("/addToCart")
 def addToCart():
     if 'email' not in session:
@@ -284,8 +389,10 @@ def addToCart():
                 conn.rollback()
                 msg = "Error occured"
         conn.close()
-        return redirect(url_for('index'))
+        return redirect(url_for('product'))
 
+# View your cart
+# DONE
 @application.route("/cart")
 def cart():
     if 'email' not in session:
@@ -303,6 +410,8 @@ def cart():
         totalPrice += row[2]
     return render_template("cart.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
+# Remove item from cart
+# DONE
 @application.route("/removeFromCart")
 def removeFromCart():
     if 'email' not in session:
@@ -323,11 +432,15 @@ def removeFromCart():
     conn.close()
     return redirect(url_for('index'))
 
+# Log out 
+# DONE
 @application.route("/logout")
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
+# Check account
+# DONE
 def is_valid(email, password):
     con = mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE)
     cur = con.cursor()
@@ -338,6 +451,18 @@ def is_valid(email, password):
             return True
     return False
 
+# Check admin
+def is_admin(email):
+    con = mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE)
+    cur = con.cursor()
+    cur.execute('SELECT userId, email FROM users WHERE email = %s', (email, ))
+    userId = cur.fetchone()[0]
+    if userId == 1:
+        return True
+    return False
+
+# Create new account
+# DONE
 @application.route("/register", methods = ['GET', 'POST'])
 def register():
     if request.method == 'POST':

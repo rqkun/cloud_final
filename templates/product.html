@@ -50,8 +50,8 @@
                 </li>
                 <li class="nav-item">
                   <div class="search-container">
-                    <form>
-                      <input type="text" placeholder="Search.." name="searchQuery">
+                    <form action='/search' method='POST'>
+                      <input id="searchBox" name="searchBox" type="text" placeholder="Search.." href="/search">
                       <button type="submit" value="Search"><i class="fa fa-search"></i></button>
                     </form>
                   </div>
@@ -106,6 +106,17 @@
           <p class="long_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem</p>
           <div class="product_section_2">
             <div class="row" id="proRow">
+        
+                <!-- <template id="post_template">
+                  <div class="price_text" id="price_text">Price $ <span style="color: #3a3a38;"></span></div>
+                  <div class="game_text" id="game_text"></div>  
+                </template>
+
+              </div>
+
+              <div class="d-flex justify-content-center mb-3" id="sentinel">
+                <div class="spinner-border" role="status"></div>
+              </div> -->
               {% for data in itemData %}
                 {% for row in data %}
                 <div id="rcorners2">
@@ -117,7 +128,6 @@
                 </div>
                 {% endfor %}
               {% endfor %}
-            </div>
           </div>
           <div class="see_main">
             <div class="see_bt"><a href="#">See More</a></div>
@@ -171,6 +181,46 @@
 
 
     <!-- Javascript files-->
+
+    <!-- <script>
+      
+      var scroller = document.querySelector("#scroller");
+      var template = document.querySelector("#post_template");
+
+      var loaded = document.querySelector("#loaded");
+
+      var sentinel = document.querySelector("#sentinel");
+      var counter = 0;
+
+      function loadItems()
+      {
+        fetch('/load?c=${counter}').then((response) => {
+
+          if (!data.lenght){
+            sentinel.innerHTML = "No more products";
+          }
+
+          for (var i = 0; i < data.lenght; i++){
+            let template_clone = template.content.cloneNone(true);
+            template_clone.querySelector("#price_text").innerHTML = data[i][2];
+            template_clone.querySelector("game_text").innerHTML = data[i][1];
+            scroller.appendChild(template_clone);
+            counter+=1;
+            loaded.innerText = '${counter} items loaded';
+          }
+        })
+      }
+
+      var intersectionObserver = new IntersectionObserver(entries => {
+        if (entries[0].intersectionRatio <= 0){
+          return;
+        }
+        loadItems();
+      });
+
+      intersectionObserver.observe(sentinel);
+    </script>
+ -->
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
@@ -187,7 +237,7 @@
     $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
-        });
+        })
     </script>
     <script>
       function w3_open() {
