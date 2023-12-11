@@ -101,34 +101,28 @@
     <div id="productMain">
         <button id="openNav" onclick="w3_open()">&#9776;</button>
       <div class="product_section layout_padding ">
-        <div class="container" >
+        <div class="container">
           <div class="product_text">Our <span style="color: #5ca0e9;">products</span></div>
           <p class="long_text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem</p>
           <div class="product_section_2">
-            <div class="row" id="proRow">
-        
-                <!-- <template id="post_template">
-                  <div class="price_text" id="price_text">Price $ <span style="color: #3a3a38;"></span></div>
-                  <div class="game_text" id="game_text"></div>  
-                </template>
-
-              </div>
-
-              <div class="d-flex justify-content-center mb-3" id="sentinel">
-                <div class="spinner-border" role="status"></div>
-              </div> -->
-              {% for data in itemData %}
-                {% for row in data %}
-                <div id="rcorners2">
-                  <a href="/productDescription?productId={{row[0]}}">
-                    <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[4]) }}" id="itemImage" >
-                  </a>
-                  <div class="price_text">Price $ <span style="color: #3a3a38;">{{row[2]}}</span></div>
-                  <div class="game_text">{{row[1]}}</div>  
-                </div>
+            <div class="container">
+              {{pagination.links}}
+              <div class="row" id="proRow">
+                {% for data in itemData %}
+                  {% for row in data %}
+                  <div id="rcorners2">
+                    <a href="/productDescription?productId={{row[0]}}">
+                      <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[4]) }}" id="itemImage" >
+                    </a>
+                    <div class="price_text">Price $ <span style="color: #3a3a38;">{{row[2]}}</span></div>
+                    <div class="game_text">{{row[1]}}</div>  
+                  </div>
+                  {% endfor %}
                 {% endfor %}
-              {% endfor %}
-          </div>
+              </div>
+            </div>
+            {{pagination.links}}
+            
           <div class="see_main">
             <div class="see_bt"><a href="#">See More</a></div>
           </div>
@@ -181,46 +175,6 @@
 
 
     <!-- Javascript files-->
-
-    <!-- <script>
-      
-      var scroller = document.querySelector("#scroller");
-      var template = document.querySelector("#post_template");
-
-      var loaded = document.querySelector("#loaded");
-
-      var sentinel = document.querySelector("#sentinel");
-      var counter = 0;
-
-      function loadItems()
-      {
-        fetch('/load?c=${counter}').then((response) => {
-
-          if (!data.lenght){
-            sentinel.innerHTML = "No more products";
-          }
-
-          for (var i = 0; i < data.lenght; i++){
-            let template_clone = template.content.cloneNone(true);
-            template_clone.querySelector("#price_text").innerHTML = data[i][2];
-            template_clone.querySelector("game_text").innerHTML = data[i][1];
-            scroller.appendChild(template_clone);
-            counter+=1;
-            loaded.innerText = '${counter} items loaded';
-          }
-        })
-      }
-
-      var intersectionObserver = new IntersectionObserver(entries => {
-        if (entries[0].intersectionRatio <= 0){
-          return;
-        }
-        loadItems();
-      });
-
-      intersectionObserver.observe(sentinel);
-    </script>
- -->
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>

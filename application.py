@@ -1,13 +1,5 @@
-from flask import (
-    Flask,
-    request,
-    render_template,
-    url_for,
-    session,
-    redirect,
-    make_response,
-    jsonify
-)
+from flask import Flask, request, render_template, url_for, session, redirect
+from flask_paginate import Pagination, get_page_args
 import mysql.connector
 import hashlib
 import os
@@ -65,14 +57,14 @@ def index():
 @application.route('/admin')
 def administrator():
     loggedIn, firstName, noOfItems = getLoginDetails()
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+    """ with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    itemData = parse(itemData)
-    return render_template('admin.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+    itemData = parse(itemData) """
+    return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
 # Serach
 # DONE
@@ -80,9 +72,6 @@ def administrator():
 def search():
     loggedIn, firstName, noOfItems = getLoginDetails()
     itemName = request.form['searchBox']
-    print("----------------------")
-    print(itemName)
-    print("----------------------")
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
@@ -92,6 +81,7 @@ def search():
 
 # View product
 # DONE
+# With paging
 @application.route('/product')
 def product():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -101,37 +91,14 @@ def product():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
+    total = len(itemData)
     itemData = parse(itemData)
 
-    return render_template('product.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    pagination_data = itemData[offset:offset+per_page]
+    pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
-""" 
-# Infinite load
-@application.route('/load')
-def load():
-    quantity = 10
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
-        cur.execute('SELECT categoryId, name FROM categories')
-        categoryData = cur.fetchall()
-    itemData = parse(itemData)
-
-    time.sleep(1)
-
-    if request.args:
-        counter = int(request.args.get("c"))
-        
-
-        if counter == 0:
-            res = make_response(jsonify(itemData[0:quantity]), 200)
-        elif counter == len(itemData):
-            res = make_response(jsonify({}), 200)
-        else:
-            res = make_response(jsonify(itemData[counter : counter + quantity]), 200)
-            
-    return res """
+    return render_template('product.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
 @application.route('/home')
 def home():
@@ -200,9 +167,14 @@ def remove():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
+    total = len(itemData)
     itemData = parse(itemData)
 
-    return render_template('remove.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    pagination_data = itemData[offset:offset+per_page]
+    pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
+
+    return render_template('remove.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
 @application.route("/productDescriptionForRemove")
 def productDescriptionForRemove():
@@ -506,11 +478,10 @@ def parse(data):
     i = 0
     while i < len(data):
         curr = []
-        for j in range(7):
-            if i >= len(data):
-                break
-            curr.append(data[i])
-            i += 1
+        if i >= len(data):
+            break
+        curr.append(data[i])
+        i += 1
         ans.append(curr)
     return ans
 
