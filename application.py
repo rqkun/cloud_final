@@ -5,6 +5,7 @@ import hashlib
 import os
 from werkzeug.utils import secure_filename
 import time
+import uuid
 
 application = Flask(__name__,static_url_path='/static')
 
@@ -35,7 +36,7 @@ def getLoginDetails():
             loggedIn = True
             cur.execute("SELECT userId, firstName FROM users WHERE email = %s", (session['email'], ))
             userId, firstName = cur.fetchone()
-            cur.execute("SELECT count(productId) FROM kart WHERE userId = %s", (userId, ))
+            cur.execute("SELECT count(productId) FROM cart WHERE userId = %s", (userId, ))
             noOfItems = cur.fetchone()[0]
     conn.close()
     return (loggedIn, firstName, noOfItems)
@@ -51,7 +52,7 @@ def index():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    itemData = parse(itemData)
+    #itemData = parse(itemData)
     return render_template('index.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
 @application.route('/admin')
@@ -76,8 +77,14 @@ def search():
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
         itemData = cur.fetchall()
-    itemData = parse(itemData)
-    return render_template('searchResult.html', data=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    total = len(itemData)
+    #itemData = parse(itemData)
+
+    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    pagination_data = itemData[offset:offset+per_page]
+    pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
+
+    return render_template('searchResult.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
 # View product
 # DONE
@@ -92,7 +99,7 @@ def product():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
-    itemData = parse(itemData)
+    #itemData = parse(itemData)
 
     page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
     pagination_data = itemData[offset:offset+per_page]
@@ -114,7 +121,7 @@ def about():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    itemData = parse(itemData)
+    #itemData = parse(itemData)
     return render_template('about.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
 # Add item
@@ -168,7 +175,7 @@ def remove():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
-    itemData = parse(itemData)
+    #itemData = parse(itemData)
 
     page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
     pagination_data = itemData[offset:offset+per_page]
@@ -215,7 +222,7 @@ def displayCategory():
             data = cur.fetchall()
         conn.close()
         categoryName = data[0][4]
-        data = parse(data)
+        #data = parse(data)
         return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryName=categoryName)
 
 # View profile
@@ -354,7 +361,7 @@ def addToCart():
             cur.execute("SELECT userId FROM users WHERE email = %s", (session['email'], ))
             userId = cur.fetchone()[0]
             try:
-                cur.execute("INSERT INTO kart (userId, productId) VALUES (%s, %s)", (userId, productId))
+                cur.execute("INSERT INTO cart (userId, productId) VALUES (%s, %s)", (userId, productId))
                 conn.commit()
                 msg = "Added successfully"
             except:
@@ -375,7 +382,7 @@ def cart():
         cur = conn.cursor()
         cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
         userId = cur.fetchone()[0]
-        cur.execute("SELECT products.productId, products.name, products.price, products.image FROM products, kart WHERE products.productId = kart.productId AND kart.userId = %s", (userId, ))
+        cur.execute("SELECT products.productId, products.name, products.price, products.image FROM products, cart WHERE products.productId = cart.productId AND cart.userId = %s", (userId, ))
         products = cur.fetchall()
     totalPrice = 0
     for row in products:
@@ -395,14 +402,121 @@ def removeFromCart():
         cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
         userId = cur.fetchone()[0]
         try:
-            cur.execute("DELETE FROM kart WHERE userId = %s AND productId = %s", (userId, productId))
+            cur.execute("DELETE FROM cart WHERE userId = %s AND productId = %s", (userId, productId))
             conn.commit()
             msg = "removed successfully"
         except:
             conn.rollback()
             msg = "error occured"
     conn.close()
-    return redirect(url_for('index'))
+    return redirect(url_for('cart'))
+
+# Checkout
+# Need to test
+@application.route("/checkoutForm")
+def checkoutForm():
+    # Lấy id user /
+    # Lấy id product /
+    # Nếu quantity product = 0 -> báo lỗi /
+    # Else:
+    #   Hiện form checkout: Tên. SDT. Address. 
+    #   Tạo Order theo user id, orderId = str(uuid.uuid4())
+    #   Tạo Order detail thei orderId và productId
+    #   Trừ quantity của product
+    email = session['email']
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
+        userId = cur.fetchone()[0]
+
+        cur.execute("SELECT productId FROM cart WHERE userId = %s", (userId, ))
+        cart = cur.fetchall()
+        productIdList =[]
+        totalPrice = 0
+        for row in cart:
+            cur.execute("SELECT stock, price, name FROM product WHERE productId = %s", (row[1], ))
+            product = cur.fetchone()[0]
+            if product[0] > 0:
+                productIdList.append(row[1])
+                totalPrice += product[1]
+            else:
+                redirect(url_for('cart'))
+    conn.close()
+    return render_template("checkout.html", totalPrice=totalPrice)
+
+@application.route("/checkout", methods = ['GET', 'POST'])
+def checkout():
+    if request.method == 'POST':
+        email = session['email']
+        name = request.form['receiverName']
+        address = request.form['receiverAddress']
+        phone = request.form['phone']
+        orderId = str(uuid.uuid4())
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
+            userId = cur.fetchone()[0]
+            try:
+                # Create order
+                cur = conn.cursor()
+                cur.execute('INSERT INTO orders (orderId, userId, receiverName, address, phone) VALUES (%s, %s, %s, %s, %s)', (orderId, name, address, phone))
+
+                conn.commit()
+
+                # Create order detail
+                cur.execute("SELECT productId FROM cart WHERE userId = %s", (userId, ))
+                cart = cur.fetchall()
+                for row in cart:
+                    cur.execute('INSERT INTO orderDetail (orderId, productId) VALUES (%s, %s)', (orderId, row[1]))
+                    conn.commit()
+
+                # Remove user cart
+                cur.execute('DELETE FROM cart WHERE userId = %s', (userId, ))
+                conn.commit()
+
+                msg = "Checkout Successfully"
+            except:
+                conn.rollback()
+                msg = "Error occured"
+        conn.close()
+        return redirect(url_for("product")) 
+
+# My orders
+# Need to test
+@application.route("/myOrders")
+def myOrders():
+    # Lấy toàn bộ orders theo userId
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    email = session['email']
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
+        userId = cur.fetchone()[0]
+        cur.execute("SELECT orderId, receiverName, address, phone FROM orders WHERE userId = %s", (userId, ))
+        orders = cur.fetchall()
+    return render_template("omyOrders.html", orders = orders, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+
+# Order detail
+@application.route("/orderDetail")
+def orderDetail():
+    # Nhận orderId
+    # Lấy toàn bộ details theo orderId
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    email = session['email']
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
+        userId = cur.fetchone()[0]
+        cur.execute("SELECT orders.orderId, products.name, products.price, products.image FROM orders, orderDetail, products WHERE products.productId = orderDetail.productId AND orders.userId = %s", (userId, ))
+        products = cur.fetchall()
+    totalPrice = 0
+    for row in products:
+        totalPrice += row[2]
+    return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
 
 # Log out 
 # DONE
@@ -473,6 +587,7 @@ def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+# Need to fix later
 def parse(data):
     ans = []
     i = 0

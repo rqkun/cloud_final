@@ -120,7 +120,6 @@
               {{pagination.links}}
               <div class="row" id="proRow">
                 {% for data in itemData %}
-                  {% for row in data %}
                   <div id="rcorners2">
                     <a href="/productDescriptionForRemove?removeProductId={{row[0]}}">
                       <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[4]) }}" id="itemImage" >
@@ -128,7 +127,6 @@
                     <div class="price_text">Price $ <span style="color: #3a3a38;">{{row[2]}}</span></div>
                     <div class="game_text">{{row[1]}}</div>  
                   </div>
-                  {% endfor %}
                 {% endfor %}
               </div>
           </div>
