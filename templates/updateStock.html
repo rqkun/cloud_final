@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>Gamepad</title>
+<title>Update</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">	
@@ -20,7 +20,7 @@
 <!-- Responsive-->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
 <!-- fevicon -->
-<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
+<link rel="icon" href="{{ url_for('static', filename='images/favicon.png')}}" type="image/gif" />
 <!-- Scrollbar Custom CSS -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
 <!-- Tweaks for older IEs-->
@@ -31,30 +31,32 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-<div class="header_section">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="logo"><a href="{{ url_for('administrator')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/add">ADD PRODUCT</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/updateStock">UPDATE PRODUCT</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/remove">REMOVE PRODUCT</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/logout">LOGOUT</a>
-            </li>
-          </ul>
+	{% include './headers/admin_header.html' %}
+  <!-- product section start -->
+  <div class="content">
+    <div id="productMain">
+      <div class="product_section layout_padding ">
+        <div class="container" >
+          <div class="product_section_2">
+            <div class="container">
+              <div class="row" id="proRow">
+                {% for row in itemData %}
+                  <div id="rcorners2">
+                    <a href="/productDescriptionForUpdate?updatedProductId={{row[0]}}">
+                      <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[4]) }}" id="itemImage" >
+                    </a>
+                    <div class="price_text">$ <span style="color: #3a3a38;">{{row[2]}}</span></div>
+                    <div class="game_text">{{row[1]}}</div>  
+                  </div>
+                {% endfor %}
+              </div>
+          </div>
+          {{pagination.links}}
         </div>
-    </nav>
-</div>
+    </div>
+  </div>
+  {% include 'footer.html' %}
+  <!-- Javascript files-->
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
@@ -67,11 +69,12 @@
     <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     <script>
-    $(document).ready(function(){
-    $(".fancybox").fancybox({
-        openEffect: "none",
-        closeEffect: "none"
-        });})
+  $(document).ready(function(){
+  $(".fancybox").fancybox({
+	  openEffect: "none",
+	  closeEffect: "none"
+	  });})
     </script>
 </body>
 </html>
+

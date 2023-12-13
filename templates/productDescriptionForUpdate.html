@@ -58,10 +58,15 @@
 		</table>
 		<h2>Description</h2>
 		<p>{{data[3]}}</p>
+		<form action="/updateProduct?updatedProductId={{data[0]}}" method="post">
+			<input type="text" id="firstname" name="quantity" placeholder="Quantity">
+			<button type="submit" href="/updateProduct?updatedProductId={{data[0]}}">Add</button>
+		</form>
+		
 	</div>
-	<div id="addToCart">
-		<a href="/addToCart?productId={{data[0]}}">Add to Cart</a>
-	</div>
+	<!-- <div id="addToCart">
+		<a href="/addToCart?productId={{request.args.get('productId')}}">Add to Cart</a>
+	</div> -->
 </div>
 {% include 'footer.html' %}
 <!-- Javascript files-->
@@ -85,4 +90,3 @@
 </script>
 </body>
 </html>
-

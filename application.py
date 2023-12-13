@@ -58,16 +58,12 @@ def index():
 @application.route('/admin')
 def administrator():
     loggedIn, firstName, noOfItems = getLoginDetails()
-    """ with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
-        cur.execute('SELECT categoryId, name FROM categories')
-        categoryData = cur.fetchall()
-    itemData = parse(itemData) """
-    return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
+    email = session['email']
+    if is_admin(email) == False:
+        return redirect(url_for('index'))
+    else: return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
-# Serach
+# Search
 # DONE
 @application.route('/search', methods=['POST'])
 def search():
@@ -131,88 +127,162 @@ def about():
 # DONE
 @application.route("/add")
 def addProduct():
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        cur = conn.cursor()
-        cur.execute("SELECT categoryId, name FROM categories")
-        categories = cur.fetchall()
-    conn.close()
-    return render_template('add.html', categories=categories)
+    email = session['email']
+    if is_admin(email) == True:
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT categoryId, name FROM categories")
+            categories = cur.fetchall()
+        conn.close()
+        return render_template('add.html', categories=categories)
+    return redirect(url_for('index'))
 
 @application.route("/addItem", methods=["GET", "POST"])
 def addItem():
-    if request.method == "POST":
-        name = request.form['name']
-        price = float(request.form['price'])
-        description = request.form['description']
-        stock = int(request.form['stock'])
-        categoryId = int(request.form['category'])
+    email = session['email']
+    if is_admin(email) == True:
+        if request.method == "POST":
+            name = request.form['name']
+            price = float(request.form['price'])
+            description = request.form['description']
+            stock = int(request.form['stock'])
+            categoryId = int(request.form['category'])
 
-        #Uploading image procedure
-        image = request.files['image']
-        if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            basedir = os.path.abspath(os.path.dirname(__file__))
-            image.save(os.path.join(basedir, application.config['UPLOAD_FOLDER'], filename))
-        imagename = filename
-        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-            try:
-                cur = conn.cursor()
-                cur.execute('''INSERT INTO products (name, price, description, image, stock, categoryId) VALUES (%s, %s, %s, %s, %s, %s)''', (name, price, description, imagename, stock, categoryId))
-                conn.commit()
-                msg="added successfully"
-            except:
-                msg="error occured"
-                conn.rollback()
-        conn.close()
-        print(msg)
-        return redirect(url_for('administrator'))
+            #Uploading image procedure
+            image = request.files['image']
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                basedir = os.path.abspath(os.path.dirname(__file__))
+                image.save(os.path.join(basedir, application.config['UPLOAD_FOLDER'], filename))
+            imagename = filename
+            with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+                try:
+                    cur = conn.cursor()
+                    cur.execute('''INSERT INTO products (name, price, description, image, stock, categoryId) VALUES (%s, %s, %s, %s, %s, %s)''', (name, price, description, imagename, stock, categoryId))
+                    conn.commit()
+                    msg="added successfully"
+                except:
+                    msg="error occured"
+                    conn.rollback()
+            conn.close()
+            print(msg)
+            return redirect(url_for('administrator'))
+    return redirect(url_for('index'))
 
 # Remove item
 @application.route("/remove")
 def remove():
-    loggedIn, firstName, noOfItems = getLoginDetails()
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
-        cur.execute('SELECT categoryId, name FROM categories')
-        categoryData = cur.fetchall()
-    total = len(itemData)
-    #itemData = parse(itemData)
+    email = session['email']
+    if is_admin(email) == True:
+        loggedIn, firstName, noOfItems = getLoginDetails()
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            cur = conn.cursor()
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            itemData = cur.fetchall()
+            cur.execute('SELECT categoryId, name FROM categories')
+            categoryData = cur.fetchall()
+        total = len(itemData)
+        #itemData = parse(itemData)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
-    per_page=16
-    pagination_data = itemData[offset:offset+per_page]
-    pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
+        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+        per_page=16
+        pagination_data = itemData[offset:offset+per_page]
+        pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
-    return render_template('remove.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+        return render_template('remove.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+    return redirect(url_for('index'))
 
 @application.route("/productDescriptionForRemove")
 def productDescriptionForRemove():
-    loggedIn, firstName, noOfItems = getLoginDetails()
-    productId = request.args.get('removeProductId')
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = %s', (productId, ))
-        productData = cur.fetchone()
-    conn.close()
-    return render_template("productDescriptionForRemove.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
+    email = session['email']
+    if is_admin(email) == True:
+        loggedIn, firstName, noOfItems = getLoginDetails()
+        productId = request.args.get('removeProductId')
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            cur = conn.cursor()
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = %s', (productId, ))
+            productData = cur.fetchone()
+        conn.close()
+        return render_template("productDescriptionForRemove.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
+    return redirect(url_for('index'))
 
 @application.route("/removeItem")
 def removeItem():
-    productId = request.args.get('removedProductId')
-    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
-        try:
+    email = session['email']
+    if is_admin(email) == True:
+        productId = request.args.get('removedProductId')
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            try:
+                cur = conn.cursor()
+                cur.execute('DELETE FROM products WHERE productID = %s', (productId, ))
+                conn.commit()
+                msg = "Deleted successsfully"
+            except:
+                conn.rollback()
+                msg = "Error occured"
+        conn.close()
+        print(msg)
+        return redirect(url_for('remove'))
+    return redirect(url_for('index'))
+
+# Update item
+@application.route("/updateStock")
+def updateStock():
+    email = session['email']
+    if is_admin(email) == True:
+        loggedIn, firstName, noOfItems = getLoginDetails()
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('DELETE FROM products WHERE productID = %s', (productId, ))
-            conn.commit()
-            msg = "Deleted successsfully"
-        except:
-            conn.rollback()
-            msg = "Error occured"
-    conn.close()
-    print(msg)
-    return redirect(url_for('remove'))
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            itemData = cur.fetchall()
+            cur.execute('SELECT categoryId, name FROM categories')
+            categoryData = cur.fetchall()
+        total = len(itemData)
+
+        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+        per_page=16
+        pagination_data = itemData[offset:offset+per_page]
+        pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
+        return render_template('updateStock.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+    return redirect(url_for('index'))
+
+@application.route("/productDescriptionForUpdate")
+def productDescriptionForUpdate():
+    email = session['email']
+    if is_admin(email) == True:
+        loggedIn, firstName, noOfItems = getLoginDetails()
+        productId = request.args.get('updatedProductId')
+        with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+            cur = conn.cursor()
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = %s', (productId, ))
+            productData = cur.fetchone()
+        conn.close()
+        return render_template("productDescriptionForUpdate.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
+    return redirect(url_for('index'))
+
+@application.route("/updateProduct", methods=['POST', 'GET'])
+def updateProduct():
+    email = session['email']
+    if is_admin(email) == False:
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            productId = request.args.get('updatedProductId')
+            additional = int(request.form.get('quantity'))
+            with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+                try:
+                    cur = conn.cursor()
+                    cur.execute('SELECT stock FROM products WHERE productId = %s', (productId, ))
+                    currentStock = cur.fetchone()[0]
+                    cur.execute('UPDATE products SET stock = %s WHERE productId = %s', (currentStock + additional, productId))
+                    conn.commit()
+                    msg = "Update successsfully"
+                    print(msg)
+                except:
+                    conn.rollback()
+                    msg = "Error occured"
+            conn.close()
+        return redirect(url_for('updateStock'))
 
 # Display item by category
 # DONE

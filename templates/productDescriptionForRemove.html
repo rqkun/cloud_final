@@ -32,30 +32,6 @@
 </head>
 <body>
 {% include './headers/admin_header.html' %}
-<div id="title">
-	<a href="/">
-		<img id="logo" src= "{{ url_for('static', filename='images/logo.png') }}" >
-	</a>
-	<form>
-		<input id="searchBox" type="text" name="searchQuery">
-		<input id="searchButton" type="submit" value="Search">
-	</form>
-
-	{% if not loggedIn %}
-	<div id="signInButton">
-		<a class="link" href="/loginForm">Sign In</a>
-	</div>
-	{% else %}
-	<div class="dropdown">
-		<button class="dropbtn">Hello, <br>{{firstName}}</button>
-		<div class="dropdown-content">
-			<a href="/account/profile">Your profile</a>
-			<hr>
-			<a href="/logout">Sign Out</a>
-		</div>
-	</div>
-	{% endif %}
-</div>
 <div id="display">
 	<div id="productName">
 		<h1>{{data[1]}}</h1>
@@ -84,7 +60,7 @@
 		<p>{{data[3]}}</p>
 	</div>
 	<div id="remove">
-		<a href="/removeItem?removedProductId={{request.args.get('removeProductId')}}">Remove</a>
+		<a href="/removeItem?removedProductId={{data[0]}}">Remove</a>
 	</div>
 </div>
 {% include 'footer.html' %}
