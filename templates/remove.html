@@ -99,14 +99,6 @@
     <div class="sidebar" style="display:none" id="productSidebar">
       <button id="productSidebtn" class="w3-bar-item w3-button w3-large" onclick="w3_close()">Close &times;</button>
       <div id="productSidepanel" class="sidepanel">
-        <div class="displayCategory">
-          <h2>Shop by Category: </h2>
-          <ul>
-            {% for row in categoryData %}
-            <li><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></li>
-            {% endfor %}
-          </ul>
-        </div>
       </div>
     </div>
     <div id="productMain">
