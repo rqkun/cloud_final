@@ -1109,7 +1109,6 @@ button {
     border-radius: 10px;
     border: none;
     background: #06c1ff;
-    /* Set the bg image here. with "no-repeat" */
     background-image: url('/static/images/search-icon.png');
     background-repeat: no-repeat;
     background-size: 10px;
