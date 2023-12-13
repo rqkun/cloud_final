@@ -1000,3 +1000,77 @@ button {
     border-bottom: 4px solid #599ee9;
     padding: 5px 0px;
 }
+#lblCartCount {
+    font-size: 12px;
+    background: #ff0000;
+    color: #fff;
+    padding: 0 5px;
+    vertical-align: top;
+    position: absolute;
+    margin-left: -18px;
+}
+.badge:after{
+    content:attr(value);
+    font-size:12px;
+    color: #fff;
+    background: red;
+    border-radius:50%;
+    padding: 0 5px;
+    position:relative;
+    left:-8px;
+    top:-10px;
+    opacity:0.9;
+}
+.cart-container {
+    display: flex;
+    align-items: center; 
+  }
+  
+.fa.badge {
+    margin-left: -10px; 
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center; /* Align items vertically centered */
+}
+
+.user-info-container i {
+    flex: 1; 
+}
+
+.round {
+    width: 100%;
+    border-radius: 15px;
+    border: 1px #000 solid;
+    padding: 5px 5px 5px 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+
+.corner {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    height: 20px;
+    width: 20px;
+    z-index: 10;
+    border-radius: 10px;
+    border: none;
+    background: #06c1ff; /* Set the bg image here. with "no-repeat" */
+    background-image: url('/static/images/search-icon.png');
+    background-repeat: no-repeat;
+    background-size: 10px;
+    margin-top: 5px;
+    background-position: center; 
+}
+
+.search {
+    position: relative;
+    width: 300px;
+    height: auto;
+    margin-top: 5px;
+    
+}
