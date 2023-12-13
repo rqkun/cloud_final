@@ -1,121 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- basic -->
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- mobile metas -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-<!-- site metas -->
-<title>Gamepad</title>
-<meta name="keywords" content="">
-<meta name="description" content="">
-<meta name="author" content="">	
-<!-- bootstrap css -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-<!-- style css -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
-<!-- Responsive-->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
-<!-- fevicon -->
-<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
-<!-- Scrollbar Custom CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
-<!-- Tweaks for older IEs-->
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-<!-- owl stylesheets --> 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
-<link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"  type='text/css'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-<link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+  <!-- basic -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+  <!-- site metas -->
+  <title>Gamepad</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
+  <!-- Responsive-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
+  <!-- fevicon -->
+  <link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
+  <!-- Tweaks for older IEs-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+  <!-- owl stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet"
+    type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+    media="screen">
+  <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
 
 </head>
-<body>
-	<!-- header section start -->
-	<div class="header_section">
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="logo"><a href="{{ url_for('index')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('index')}}">HOME</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('about')}}">ABOUT</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('product')}}">PRODUCTS</a>
-                </li>
-                <li class="nav-item">
-                  <div class="dropdown">
-                    <span class="nav-link" >CATEGORIES</span>
-                    <div class="dropdown-content">
-                      {% for row in categoryData %}
-                        <p><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></p>
-                      {% endfor %}
-                    </div>
-                  </div>
-                </li>
-                <li class="nav-item">
 
-                  <form id="search-form" action='/search' method='POST'>
-                    <div class="search" >
-                      <input id="searchBox" type="text" name="searchBox" class="round" placeholder="Search.." href="/search"/>
-                      <input type="submit" class="corner" value="" />
-                    </div>
-                </form>
-                </li>
-                {% if not loggedIn %}
-                <li class="nav-item">
-                  <a class="nav-link" href="/loginForm">SIGN IN</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/registerationForm">REGISTER</a>
-                </li>
-                {% else %}
-                
-                <div class="dropdown">
-                  <span class="nav-link active" >USER</span>
-                  <div class="dropdown-content">
-                    <a class="nav-link" href="/account/orders">ORDERS</a>
-                    <a class="nav-link" href="/account/profile">PROFILE</a>
-                    <a class="nav-link" href="/logout">LOGOUT</a>
-                  </div>
-                </div>
-                <li class="nav-item cart-container">
-                  <a class="nav-link" href="/cart">CART</a>
-                  <a class="fa badge fa-lg" value={{noOfItems}}>&#xf07a;</a>
-                </li>
-                {% endif %}
-              </ul>
+<body>
+  <!-- header section start -->
+  <div class="header_section">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="logo"><a href="{{ url_for('index')}}"><img
+            src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('index')}}">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('about')}}">ABOUT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('product')}}">PRODUCTS</a>
+          </li>
+          <li class="nav-item">
+            <div class="dropdown">
+              <span class="nav-link">CATEGORIES</span>
+              <div class="dropdown-content">
+                {% for row in categoryData %}
+                <p><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></p>
+                {% endfor %}
+              </div>
             </div>
-        </nav>
-	</div>
-	<!-- header section end -->
-    <!-- Javascript files-->
-    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
-    <!-- sidebar -->
-    <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
-    <!-- javascript --> 
-    <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
-    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-    <script>
-$(document).ready(function(){
-    $(".fancybox").fancybox({
+          </li>
+          <li class="nav-item">
+
+            <form id="search-form" action='/search' method='POST'>
+              <div class="search">
+                <input id="searchBox" type="text" name="searchBox" class="round" placeholder="Search.."
+                  href="/search" />
+                <input type="submit" class="corner" value="" />
+              </div>
+            </form>
+          </li>
+          {% if not loggedIn %}
+          <li class="nav-item">
+            <a class="nav-link" href="/loginForm">SIGN IN</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/registerationForm">REGISTER</a>
+          </li>
+          {% else %}
+
+          <div class="dropdown">
+            <span class="nav-link active">USER</span>
+            <div class="dropdown-content">
+              <a class="nav-link" href="/account/orders">ORDERS</a>
+              <a class="nav-link" href="/account/profile">PROFILE</a>
+              <a class="nav-link" href="/logout">LOGOUT</a>
+            </div>
+          </div>
+          <li class="nav-item cart-container">
+            <a class="nav-link" href="/cart">CART</a>
+            <a class="fa badge fa-lg" value={{noOfItems}}>&#xf07a;</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <!-- header section end -->
+  <!-- Javascript files-->
+  <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+  <!-- sidebar -->
+  <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+  <!-- javascript -->
+  <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
+  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
-        });})
-    </script>
+      });
+    })
+  </script>
 </body>
+
 </html>

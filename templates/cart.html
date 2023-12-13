@@ -1,85 +1,89 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<!-- basic -->
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- mobile metas -->
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-		<!-- site metas -->
-		<title>Cart</title>
-		<meta name="keywords" content="">
-		<meta name="description" content="">
-		<meta name="author" content="">	
-		<!-- bootstrap css -->
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-		<!-- style css -->
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
-		<!-- Responsive-->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
-		<!-- fevicon -->
-		<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
-		<!-- Scrollbar Custom CSS -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
-		<!-- Tweaks for older IEs-->
-		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-		<!-- owl stylesheets --> 
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-		</head>
+
+<head>
+	<!-- basic -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- mobile metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<!-- site metas -->
+	<title>Cart</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- bootstrap css -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+	<!-- style css -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
+	<!-- Responsive-->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
+	<!-- fevicon -->
+	<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
+	<!-- Scrollbar Custom CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
+	<!-- Tweaks for older IEs-->
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+	<!-- owl stylesheets -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+		media="screen">
+</head>
+
 <body>
-{% include './headers/header.html' %}
-<div id="cartItems">
-	<h2>Shopping Cart</h2>
-	<div id="tableItems">
-		{% for row in products %}
-		<div>
+	{% include './headers/header.html' %}
+	<div id="cartItems">
+		<h2>Shopping Cart</h2>
+		<div id="tableItems">
+			{% for row in products %}
+			<div>
+				<hr id="seperator">
+				<div id="itemImage">
+					<img src="{{url_for('static', filename='uploads/'+row[3])}}" id="image">
+				</div>
+				<div id="itemName">
+					<span id="itemNameTag">{{row[1]}}</span><br>
+					In stock<br>
+					<a href="/removeFromCart?productId={{row[0]}}">Remove</a>
+				</div>
+				<div id="itemPrice">
+					${{row[2]}}
+				</div>
+			</div>
+			{% endfor %}
 			<hr id="seperator">
-			<div id="itemImage">
-				<img src="{{url_for('static', filename='uploads/'+row[3])}}" id="image">
+			<div id="total">
+				<span id="subtotal">Subtotal</span> : ${{totalPrice}}
 			</div>
-			<div id="itemName">
-				<span id="itemNameTag">{{row[1]}}</span><br>
-				In stock<br>
-				<a href="/removeFromCart?productId={{row[0]}}">Remove</a>
-			</div>
-			<div id="itemPrice">
-				${{row[2]}}
-			</div>
-		</div>
-		{% endfor %}
-		<hr id="seperator">
-		<div id="total">
-			<span id="subtotal">Subtotal</span> : ${{totalPrice}}
 		</div>
 	</div>
-</div>
-<a href="/checkoutForm">Proceed to checkout</a>
+	<a href="/checkoutForm">Proceed to checkout</a>
 
-{% include 'footer.html' %}
-<!-- Javascript files-->
-  <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
-  <!-- sidebar -->
-  <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-  <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
-  <!-- javascript --> 
-  <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
-  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-  <script>
-  $(document).ready(function(){
-  $(".fancybox").fancybox({
-	  openEffect: "none",
-	  closeEffect: "none"
-	  });})
-  </script>
+	{% include 'footer.html' %}
+	<!-- Javascript files-->
+	<script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+	<!-- sidebar -->
+	<script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+	<!-- javascript -->
+	<script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
+	<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$(".fancybox").fancybox({
+				openEffect: "none",
+				closeEffect: "none"
+			});
+		})
+	</script>
 
 </body>
-</html>
 
+</html>

@@ -1,95 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<!-- basic -->
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- mobile metas -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-<!-- site metas -->
-<title>Gamepad</title>
-<meta name="keywords" content="">
-<meta name="description" content="">
-<meta name="author" content="">	
-<!-- bootstrap css -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-<!-- style css -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
-<!-- Responsive-->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
-<!-- fevicon -->
-<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
-<!-- Scrollbar Custom CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
-<!-- Tweaks for older IEs-->
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-<!-- owl stylesheets --> 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+  <!-- basic -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+  <!-- site metas -->
+  <title>Gamepad</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
+  <!-- Responsive-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
+  <!-- fevicon -->
+  <link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
+  <!-- Tweaks for older IEs-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+  <!-- owl stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+    media="screen">
 </head>
+
 <body>
-	<!-- footer section start -->
-    <div class="section_footer ">
-        <div class="container"> 
-            <div class="footer_section_2">
-              <div class="row">
-                  <div class="col-sm-6 col-md-6 col-lg-3">
-                    <h2 class="account_text">About Us</h2>
-                    <p class="ipsum_text_2">Discover top-notch gaming gear for every player. Elevate your experience with precision peripherals, immersive audio, and expertly curated accessories.</p>
-                  </div>
-                  <div class="col-sm-6 col-md-6 col-lg-3">
-                    <h2 class="account_text">Useful Link</h2>
-                    <div class="useful_link">
-                      <ul>
-                        <li><a href="#">Video games</a></li>
-                        <li><a href="#">Remote control</a></li>
-                        <li><a href="#">3d controller</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-sm-6 col-md-6 col-lg-3">
-                  <h2 class="account_text">Contact Us</h2>
-                  <p class="ipsum_text_2">dolor sit amet, consectetur magna aliqua. quisdotempor incididunt ut e </p>
-                  </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-              <h2 class="account_text">Newsletter</h2>
-              <input type="" class="email_text" placeholder="Enter Your Email" name="Enter Your Email">
-              <button class="subscribr_bt">SUBSCRIBE</button>
+  <!-- footer section start -->
+  <div class="section_footer ">
+    <div class="container">
+      <div class="footer_section_2">
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <h2 class="account_text">About Us</h2>
+            <p class="ipsum_text_2">Discover top-notch gaming gear for every player. Elevate your experience with
+              precision peripherals, immersive audio, and expertly curated accessories.</p>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <h2 class="account_text">Useful Link</h2>
+            <div class="useful_link">
+              <ul>
+                <li><a href="#">Video games</a></li>
+                <li><a href="#">Remote control</a></li>
+                <li><a href="#">3d controller</a></li>
+              </ul>
             </div>
           </div>
-        </div>
-        <div class="social_icon">
-          <ul>
-            <li><a href="#"><img src="{{ url_for('static', filename='images/fb-icon.png')}}"></a></li>
-            <li><a href="#"><img src="{{ url_for('static', filename='images/twitter-icon.png')}}"></a></li>
-            <li><a href="#"><img src="{{ url_for('static', filename='images/linkdin-icon.png')}}"></a></li>
-            <li><a href="#"><img src="{{ url_for('static', filename='images/instagram-icon.png')}}"></a></li>
-          </ul>
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <h2 class="account_text">Contact Us</h2>
+            <p class="ipsum_text_2">dolor sit amet, consectetur magna aliqua. quisdotempor incididunt ut e </p>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <h2 class="account_text">Newsletter</h2>
+            <input type="" class="email_text" placeholder="Enter Your Email" name="Enter Your Email">
+            <button class="subscribr_bt">SUBSCRIBE</button>
+          </div>
         </div>
       </div>
+      <div class="social_icon">
+        <ul>
+          <li><a href="#"><img src="{{ url_for('static', filename='images/fb-icon.png')}}"></a></li>
+          <li><a href="#"><img src="{{ url_for('static', filename='images/twitter-icon.png')}}"></a></li>
+          <li><a href="#"><img src="{{ url_for('static', filename='images/linkdin-icon.png')}}"></a></li>
+          <li><a href="#"><img src="{{ url_for('static', filename='images/instagram-icon.png')}}"></a></li>
+        </ul>
+      </div>
     </div>
-    <!-- footer section end -->
-    <!-- Javascript files-->
-    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
-    <!-- sidebar -->
-    <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
-    <!-- javascript --> 
-    <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
-    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-    <script>
-    $(document).ready(function(){
-    $(".fancybox").fancybox({
+  </div>
+  <!-- footer section end -->
+  <!-- Javascript files-->
+  <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+  <!-- sidebar -->
+  <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+  <!-- javascript -->
+  <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
+  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
-        });})
-    </script>
+      });
+    })
+  </script>
 </body>
+
 </html>
