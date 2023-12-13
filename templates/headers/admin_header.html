@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>My orders</title>
+<title>Gamepad</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">	
@@ -31,28 +31,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-  {% include './headers/header.html' %}
-  <!-- product section start -->
-  <div class="content">
-    <div id="productMain">
-        <div class="container">
-            {{pagination.links}}
-              {% for row in orders %}
-                <div class="row">
-                    <a href="/orderDetail?orderId={{row[0]}}">
-                        <div class="price_text"><span style="color: #3a3a38;">{{row[1]}}</span></div>
-                        <div class="game_text">{{row[0]}}</div>  
-                    </a>
-                </div>
-              {% endfor %}
-          </div>
-          {{pagination.links}}
-  {% include 'footer.html' %}
-
-  <!-- product section end -->
-
-
-    <!-- Javascript files-->
+<div class="header_section">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="logo"><a href="{{ url_for('administrator')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/add">ADD PRODUCT</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/remove">REMOVE PRODUCT</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/logout">LOGOUT</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+</div>
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
@@ -70,19 +69,6 @@
         openEffect: "none",
         closeEffect: "none"
         });})
-    </script>
-    <script>
-      function w3_open() {
-        document.getElementById("productMain").style.marginLeft = "25%";
-        document.getElementById("productSidebar").style.width = "25%";
-        document.getElementById("productSidebar").style.display = "block";
-        document.getElementById("openNav").style.display = 'none';
-      }
-      function w3_close() {
-        document.getElementById("productMain").style.marginLeft = "0%";
-        document.getElementById("productSidebar").style.display = "none";
-        document.getElementById("openNav").style.display = "inline-block";
-      }  
     </script>
 </body>
 </html>

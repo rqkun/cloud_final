@@ -48,7 +48,7 @@ def index():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products LIMIT 4')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -77,6 +77,8 @@ def search():
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
         itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     total = len(itemData)
     #itemData = parse(itemData)
 
@@ -84,7 +86,7 @@ def search():
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
-    return render_template('searchResult.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template('searchResult.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData = categoryData)
 
 # View product
 # DONE
@@ -102,6 +104,7 @@ def product():
     #itemData = parse(itemData)
 
     page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    per_page = 16
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -122,7 +125,7 @@ def about():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     #itemData = parse(itemData)
-    return render_template('about.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
+    return render_template('about.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData = categoryData) 
 
 # Add item
 # DONE
@@ -178,6 +181,7 @@ def remove():
     #itemData = parse(itemData)
 
     page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    per_page=16
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -243,8 +247,10 @@ def profileHome():
         cur = conn.cursor()
         cur.execute("SELECT userId, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone FROM users WHERE email = %s", (session['email'], ))
         profileData = cur.fetchone()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     conn.close()
-    return render_template("profileHome.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template("profileHome.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Update profile
 # DONE
@@ -257,8 +263,10 @@ def editProfile():
         cur = conn.cursor()
         cur.execute("SELECT userId, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone FROM users WHERE email = %s", (session['email'], ))
         profileData = cur.fetchone()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     conn.close()
-    return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 @application.route("/updateProfile", methods=["GET", "POST"])
 def updateProfile():
@@ -352,8 +360,10 @@ def productDescription():
         cur = conn.cursor()
         cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE productId = %s', (productId, ))
         productData = cur.fetchone()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     conn.close()
-    return render_template("productDescription.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
+    return render_template("productDescription.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems,categoryData=categoryData)
 
 # Add item to cart
 # DONE
@@ -391,10 +401,12 @@ def cart():
         userId = cur.fetchone()[0]
         cur.execute("SELECT products.productId, products.name, products.price, products.image FROM products, cart WHERE products.productId = cart.productId AND cart.userId = %s", (userId, ))
         products = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
-    return render_template("cart.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template("cart.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Remove item from cart
 # DONE
@@ -448,8 +460,10 @@ def checkoutForm():
                 totalPrice += product[1]
             else:
                 redirect(url_for('cart'))
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     conn.close()
-    return render_template("checkout.html", totalPrice=totalPrice)
+    return render_template("checkout.html", totalPrice=totalPrice,categoryData=categoryData)
 
 @application.route("/checkout", methods = ['GET', 'POST'])
 def checkout():
@@ -504,13 +518,15 @@ def myOrders():
         userId = cur.fetchone()[0]
         cur.execute("SELECT orderId, receiverName, shippingAddress, phone FROM orders WHERE userId = %s", (userId, ))
         orders = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
     total = len(orders)
 
     page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
     pagination_data = orders[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
-    return render_template("myOrders.html", orders = pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template("myOrders.html", orders = pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData)
 
 # Order detail
 # DONE
@@ -532,11 +548,13 @@ def orderDetail():
                     INNER JOIN products ON orderdetail.productId = products.productId \
                     WHERE orderDetail.orderId = %s \
                     AND products.productId = orderDetail.productId", (orderId, ))
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
         products = cur.fetchall()
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
-    return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+    return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Log out 
 # DONE

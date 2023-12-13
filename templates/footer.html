@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>My orders</title>
+<title>Gamepad</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">	
@@ -31,27 +31,47 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-  {% include './headers/header.html' %}
-  <!-- product section start -->
-  <div class="content">
-    <div id="productMain">
-        <div class="container">
-            {{pagination.links}}
-              {% for row in orders %}
-                <div class="row">
-                    <a href="/orderDetail?orderId={{row[0]}}">
-                        <div class="price_text"><span style="color: #3a3a38;">{{row[1]}}</span></div>
-                        <div class="game_text">{{row[0]}}</div>  
-                    </a>
-                </div>
-              {% endfor %}
+	<!-- footer section start -->
+    <div class="section_footer ">
+        <div class="container"> 
+            <div class="footer_section_2">
+              <div class="row">
+                  <div class="col-sm-6 col-md-6 col-lg-3">
+                    <h2 class="account_text">About Us</h2>
+                    <p class="ipsum_text_2">Discover top-notch gaming gear for every player. Elevate your experience with precision peripherals, immersive audio, and expertly curated accessories.</p>
+                  </div>
+                  <div class="col-sm-6 col-md-6 col-lg-3">
+                    <h2 class="account_text">Useful Link</h2>
+                    <div class="useful_link">
+                      <ul>
+                        <li><a href="#">Video games</a></li>
+                        <li><a href="#">Remote control</a></li>
+                        <li><a href="#">3d controller</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-md-6 col-lg-3">
+                  <h2 class="account_text">Contact Us</h2>
+                  <p class="ipsum_text_2">dolor sit amet, consectetur magna aliqua. quisdotempor incididunt ut e </p>
+                  </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+              <h2 class="account_text">Newsletter</h2>
+              <input type="" class="email_text" placeholder="Enter Your Email" name="Enter Your Email">
+              <button class="subscribr_bt">SUBSCRIBE</button>
+            </div>
           </div>
-          {{pagination.links}}
-  {% include 'footer.html' %}
-
-  <!-- product section end -->
-
-
+        </div>
+        <div class="social_icon">
+          <ul>
+            <li><a href="#"><img src="{{ url_for('static', filename='images/fb-icon.png')}}"></a></li>
+            <li><a href="#"><img src="{{ url_for('static', filename='images/twitter-icon.png')}}"></a></li>
+            <li><a href="#"><img src="{{ url_for('static', filename='images/linkdin-icon.png')}}"></a></li>
+            <li><a href="#"><img src="{{ url_for('static', filename='images/instagram-icon.png')}}"></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- footer section end -->
     <!-- Javascript files-->
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
@@ -70,19 +90,6 @@
         openEffect: "none",
         closeEffect: "none"
         });})
-    </script>
-    <script>
-      function w3_open() {
-        document.getElementById("productMain").style.marginLeft = "25%";
-        document.getElementById("productSidebar").style.width = "25%";
-        document.getElementById("productSidebar").style.display = "block";
-        document.getElementById("openNav").style.display = 'none';
-      }
-      function w3_close() {
-        document.getElementById("productMain").style.marginLeft = "0%";
-        document.getElementById("productSidebar").style.display = "none";
-        document.getElementById("openNav").style.display = "inline-block";
-      }  
     </script>
 </body>
 </html>
