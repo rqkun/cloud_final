@@ -31,101 +31,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-	<!-- header section start -->
-	<div class="header_section">
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="logo"><a href="{{ url_for('index')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="home">HOME</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about">ABOUT</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="product">PRODUCTS</a>
-                </li>
-                <li class="nav-item">
-                  <div class="search-container">
-                    <form>
-                      <input type="text" placeholder="Search.." name="searchQuery">
-                      <button type="submit" value="Search"><i class="fa fa-search"></i></button>
-                    </form>
+  {% include './headers/header.html' %}
+  <!-- product section start -->
+  <div class="content">
+    <div id="productMain">
+      <div class="product_section layout_padding ">
+        <div class="container">
+          <div class="product_text">Our  newest <span style="color: #5ca0e9;">products</span></div>
+          <p class="long_text">Elevate your gaming experience with cutting-edge gear designed for victory. Dive into a world of precision and responsiveness with our premium gaming peripherals, from high-performance mice and keyboards to immersive headsets.</p>
+          <div class="product_section_2">
+            <div class="container">
+              <div class="row" id="proRow">
+                {% for row in itemData %}
+                  <div id="rcorners2">
+                    <a href="/productDescription?productId={{row[0]}}">
+                      <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[4]) }}" id="itemImage" >
+                    </a>
+                    <div class="price_text">$ <span style="color: #3a3a38;">{{row[2]}}</span></div>
+                    <div class="game_text">{{row[1]}}</div>  
                   </div>
-                  
-                </li>
-                {% if not loggedIn %}
-                <li class="nav-item active">
-                  <a class="nav-link" href="/loginForm">SIGN IN</a>
-                </li>
-                {% else %}
-                <li class="dropdown">
-                  <button class="dropbtn">Hello, <br>{{firstName}}</button>
-                  <div class="dropdown-content">
-                    <a href="/account/orders">Your orders</a>
-                    <a href="/account/profile">Your profile</a>
-                    <hr>
-                    <a href="/logout">Sign Out</a>
-                  </div>
-                </li>
-                {% endif %}
-                <li class="nav-item active" id="kart">
-                  <a class="nav-link" href="/cart">
-                    <!--<img src="{{url_for('static', filename='images/shoppingCart.png')}}" id="cartIcon" > -->
-                    CART {{noOfItems}}
-                  </a>
-                </li>
-              </ul>
+                {% endfor %}
+              </div>
             </div>
-        </nav>
-	</div>
-	<!-- header section end -->
- 
-  <!-- footer section start -->
-  <div class="section_footer ">
-      <div class="container"> 
-          <div class="footer_section_2">
-            <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-3">
-                  <h2 class="account_text">About Us</h2>
-                  <p class="ipsum_text_2">dolor sit amet, consectetur magna aliqua. Ut enim ad minim veniam, quisdotempor incididunt r</p>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-3">
-                  <h2 class="account_text">Useful Link</h2>
-                  <div class="useful_link">
-                    <ul>
-                      <li><a href="#">Video games</a></li>
-                      <li><a href="#">Remote control</a></li>
-                      <li><a href="#">3d controller</a></li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-3">
-                <h2 class="account_text">Contact Us</h2>
-                <p class="ipsum_text_2">dolor sit amet, consectetur magna aliqua. quisdotempor incididunt ut e </p>
-                </div>
-          <div class="col-sm-6 col-md-6 col-lg-3">
-            <h2 class="account_text">Newsletter</h2>
-            <input type="" class="email_text" placeholder="Enter Your Email" name="Enter Your Email">
-            <button class="subscribr_bt">SUBSCRIBE</button>
-          </div>
+            <div class="shop_bt_3"><a href="/product">See More</a></div>
         </div>
-      </div>
-      <div class="social_icon">
-        <ul>
-          <li><a href="#"><img src="{{ url_for('static', filename='images/fb-icon.png')}}"></a></li>
-          <li><a href="#"><img src="{{ url_for('static', filename='images/twitter-icon.png')}}"></a></li>
-          <li><a href="#"><img src="{{ url_for('static', filename='images/linkdin-icon.png')}}"></a></li>
-          <li><a href="#"><img src="{{ url_for('static', filename='images/instagram-icon.png')}}"></a></li>
-        </ul>
-      </div>
     </div>
   </div>
-  <!-- footer section end -->
+  {% include 'footer.html' %}
   <!-- Javascript files-->
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
@@ -139,11 +71,11 @@
     <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     <script>
-    $(document).ready(function(){
-    $(".fancybox").fancybox({
-        openEffect: "none",
-        closeEffect: "none"
-        });
+  $(document).ready(function(){
+  $(".fancybox").fancybox({
+	  openEffect: "none",
+	  closeEffect: "none"
+	  });})
     </script>
 </body>
 </html>

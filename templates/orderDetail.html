@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="container">
+    <form action='/checkout' method='POST'>
+    <div class="col-50">
+        <h3>Order details</h3>
+        <div class="row"><label for="fname"><i class="fa fa-user"></i> Full Name: {{products[0][4]}}</label></div>
+        <div class="row"><label for="adr"><i class="fa fa-address-card-o"></i> Address: {{products[0][5]}}</label></div>
+        <div class="row"><label for="phone"><i class="fa fa-institution"></i> Phone number: {{products[0][6]}}</label></div>
+    </div>
+    <div class="row" id="proRow">
+        {% for row in products %}
+          <div class="row">
+            <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[3]) }}" id="itemImage" >
+            <div class="price_text">Price $ <span style="color: #3a3a38;">{{row[2]}}</span></div>
+            <div class="game_text">{{row[1]}}</div>
+          </div>
+        {% endfor %}
+      </div>
+        <p>Total <span class="price" style="color:black"><b>{{totalPrice}}</b></span></p>
+    </form>
+    </div>
+  </div>

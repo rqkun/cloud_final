@@ -1,5 +1,5 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <!-- basic -->
 <meta charset="utf-8">
@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>Profile</title>
+<title>Remove</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">	
@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-{% include './headers/header.html' %}
+{% include './headers/admin_header.html' %}
 <div id="title">
 	<a href="/">
 		<img id="logo" src= "{{ url_for('static', filename='images/logo.png') }}" >
@@ -49,60 +49,63 @@
 	<div class="dropdown">
 		<button class="dropbtn">Hello, <br>{{firstName}}</button>
 		<div class="dropdown-content">
-			<a href="/account/orders">Your orders</a>
 			<a href="/account/profile">Your profile</a>
 			<hr>
 			<a href="/logout">Sign Out</a>
 		</div>
 	</div>
 	{% endif %}
-	<div id="kart">
-		<a class="link" href="/cart">
-			<img src="{{url_for('static', filename='images/shoppingCart.png')}}" id="cartIcon" >
-			CART {{noOfItems}}
-		</a>
+</div>
+<div id="display">
+	<div id="productName">
+		<h1>{{data[1]}}</h1>
+	</div>
+	<div>
+		<img src="{{url_for('static', filename='uploads/'+data[4]) }}" id="productImage">
+	</div>
+
+	<div id="productDescription">
+		<h2>Details</h2>
+		<table id="descriptionTable">
+			<tr>
+				<td>Name</td>
+				<td>{{data[1]}}</td>
+			</tr>
+			<tr>
+				<td>Price</td>
+				<td>${{data[2]}}</td>
+			</tr>
+			<tr>
+				<td>Stock</td>
+				<td>{{data[5]}}</td>
+			</tr>
+		</table>
+		<h2>Description</h2>
+		<p>{{data[3]}}</p>
+	</div>
+	<div id="remove">
+		<a href="/removeItem?removedProductId={{request.args.get('removeProductId')}}">Remove</a>
 	</div>
 </div>
-
-<div class="display">
-	<h2>My profile</h2>
-	<form>
-		<p>Email:</p> <a>{{profileData[1]}}</a>
-		<p>First Name:</p> <a>{{profileData[2]}}></a>
-		<p>Last Name:</p> <a>{{profileData[3]}}></a>
-		<p>Address 1:</p> <a>{{profileData[4]}}></a>
-		<p>Address 2:</p> <a>{{profileData[5]}}></a>
-		<p>Zip Code:</p> <a>{{profileData[6]}}></a>
-		<p>City:</p> <a>{{profileData[7]}}></a>
-		<p>State:</p> <a>{{profileData[8]}}></a>
-		<p>Country:</p> <a>{{profileData[9]}}></a>
-		<p>Phone Number:</p> <a>{{profileData[10]}}></a>
-	</form>
-</div>
-
-<div class="display">
-	<a href="/account/profile/edit">Edit Profile</a><br>
-	<a href="/account/profile/changePassword">Change password</a>
-</div>
 {% include 'footer.html' %}
-  <!-- Javascript files-->
-    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
-    <!-- sidebar -->
-    <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
-    <!-- javascript --> 
-    <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
-    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-    <script>
+<!-- Javascript files-->
+  <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+  <!-- sidebar -->
+  <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+  <!-- javascript --> 
+  <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
+  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script>
   $(document).ready(function(){
   $(".fancybox").fancybox({
 	  openEffect: "none",
 	  closeEffect: "none"
 	  });})
-    </script>
+  </script>
 </body>
 </html>

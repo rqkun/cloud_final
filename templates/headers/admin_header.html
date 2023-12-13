@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>Product</title>
+<title>Gamepad</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">	
@@ -31,34 +31,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
-  {% include './headers/header.html' %}
-  <!-- product section start -->
-  <div class="content">
-    <div id="productMain">
-      <div class="product_section layout_padding ">
-        <div class="container">
-          <div class="product_text"><span style="color: #5ca0e9;">{{categoryName}}</span></div>
-          <div class="product_section_2">
-            <div class="container">
-              <div class="row" id="proRow">
-                {% for row in itemData %}
-                  <div id="rcorners2">
-                    <a href="/productDescription?productId={{row[0]}}">
-                      <img style= "border-radius: 25px;"src="{{ url_for('static', filename='uploads/' + row[3]) }}" id="itemImage" >
-                    </a>
-                    <div class="price_text">$ <span style="color: #3a3a38;">{{row[2]}}</span></div>
-                    <div class="game_text">{{row[1]}}</div>  
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-            {{pagination.links}}
+<div class="header_section">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="logo"><a href="{{ url_for('administrator')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/add">ADD PRODUCT</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/remove">REMOVE PRODUCT</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/logout">LOGOUT</a>
+            </li>
+          </ul>
         </div>
-    </div>
-  </div>
-  <!-- product section end -->
-  {% include 'footer.html' %}
-    <!-- Javascript files-->
+    </nav>
+</div>
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
@@ -75,7 +68,7 @@
     $(".fancybox").fancybox({
         openEffect: "none",
         closeEffect: "none"
-        })})
+        });})
     </script>
 </body>
 </html>
