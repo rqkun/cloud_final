@@ -80,7 +80,9 @@ def search():
     total = len(itemData)
     #itemData = parse(itemData)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -101,8 +103,9 @@ def product():
     total = len(itemData)
     #itemData = parse(itemData)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
     per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -188,8 +191,9 @@ def remove():
         total = len(itemData)
         #itemData = parse(itemData)
 
-        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
-        per_page=16
+        page = int(request.args.get('page', 1))
+        per_page = 16
+        offset = (page - 1) * per_page
         pagination_data = itemData[offset:offset+per_page]
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -248,9 +252,10 @@ def updateProductInfo():
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
         total = len(itemData)
-
-        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
-        per_page=16
+        
+        page = int(request.args.get('page', 1))
+        per_page = 16
+        offset = (page - 1) * per_page
         pagination_data = itemData[offset:offset+per_page]
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
         return render_template('updateProductInfo.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
@@ -325,7 +330,9 @@ def displayCategory():
     conn.close()
     categoryName = itemData[0][4]
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
     #data = parse(data)
@@ -444,7 +451,7 @@ def login():
             else: 
                 return redirect(url_for('index'))
         else:
-            error = 'Invalid UserId / Password'
+            error = 'Invalid Email / Password'
             return render_template('login.html', error=error)
 
 # View product detail
@@ -503,7 +510,9 @@ def cart():
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
-    return render_template("cart.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
+    subTotal=totalPrice
+    totalPrice = round(totalPrice+1.99, 2)
+    return render_template("cart.html", products = products, subTotal=subTotal,totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Remove item from cart
 # DONE
@@ -561,6 +570,7 @@ def checkoutForm():
                 redirect(url_for('cart'))
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
+        totalPrice= round(totalPrice+1.99, 2)
     conn.close()
     return render_template("checkout.html", totalPrice=totalPrice,categoryData=categoryData)
 
@@ -623,7 +633,9 @@ def myOrders():
         categoryData = cur.fetchall()
     total = len(orders)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = orders[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -703,20 +715,30 @@ def register():
         state = request.form['state']
         country = request.form['country']
         phone = request.form['phone']
-
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             try:
+
                 cur = conn.cursor()
-                cur.execute('INSERT INTO users (password, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (hashlib.md5(password.encode()).hexdigest(), email, firstName, lastName, address1, address2, zipcode, city, state, country, phone))
-
-                conn.commit()
-
-                msg = "Registered Successfully"
+                
+                cur.execute('SELECT email FROM users WHERE email = %s', (email, ))
+                user = cur.fetchone()
+                if user == None:
+                    cur.execute('INSERT INTO users (password, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (hashlib.md5(password.encode()).hexdigest(), email, firstName, lastName, address1, address2, zipcode, city, state, country, phone))
+                    conn.commit()
+                    conn.close()
+                    msg = "Registered Successfully"
+                    return render_template("login.html", msg=msg)
+                else:
+                    error = "Gmail existed!"
+                    conn.close()
+                    return render_template("login.html", error=error)
             except:
                 conn.rollback()
-                msg = "Error occured"
-        conn.close()
-        return render_template("login.html", error=msg)
+                error = "Error occured"
+                conn.close()
+                return render_template("login.html", error=error)
+     
+        
 
 @application.route("/registerationForm")
 def registrationForm():

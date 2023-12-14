@@ -99,12 +99,19 @@ body {
   border-radius: 30px;
   font-weight: 600;
 }
+.screen-1 .login:hover {
+  background: #528cff;
+}
+.screen-1 .login:hover:focus {
+  background: #528cff;
+}
 .screen-1 .footer {
   display: flex;
   font-size: 0.7em;
   color: #5e5e5e;
   gap: 14em;
   padding-bottom: 10em;
+  margin-left: 50px;
 }
 .screen-1 .footer span {
   cursor: pointer;
@@ -112,4 +119,14 @@ body {
 
 button {
   cursor: pointer;
+}
+#error-message{
+  font-size: 15px;
+  color: #ed1c24;
+  margin-left: 10px;
+}
+#sucess-message{
+  font-size: 15px;
+  color: #3ee5ff;
+  margin-left: 10px;
 }

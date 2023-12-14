@@ -35,32 +35,65 @@
 
 <body>
 	{% include './headers/header.html' %}
-	<div id="cartItems">
-		<h2>Shopping Cart</h2>
-		<div id="tableItems">
-			{% for row in products %}
-			<div>
-				<hr id="seperator">
-				<div id="itemImage">
-					<img src="{{url_for('static', filename='uploads/'+row[3])}}" id="image">
-				</div>
-				<div id="itemName">
-					<span id="itemNameTag">{{row[1]}}</span><br>
-					In stock<br>
-					<a href="/removeFromCart?productId={{row[0]}}">Remove</a>
-				</div>
-				<div id="itemPrice">
-					${{row[2]}}
-				</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9" >
+				{% for row in products %}
+				<section class="py-5">
+					<div class="border rounded-4 mb-3 d-flex justify-content-center">
+						<a data-fslightbox="mygallery" class="rounded-4" target="_blank" style="border-radius: 25px;"
+							data-type="image" href="{{url_for('static', filename='uploads/'+row[3])}}">
+							<img style="max-width: 100%; max-height: 200px; margin: auto; border-radius: 25px; object-fit: scale-down;"
+								class="rounded-4 fit" src="{{url_for('static', filename='uploads/'+row[3])}}" />
+						</a>
+					</div>
+					<div class="ps-lg-3">
+						<h4 class="title text-dark"> {{row[1]}}</h4>
+						<div class="mb-3">
+							<span class="h5">${{row[2]}}</span>
+							
+						</div>
+						<a href="/removeFromCart?productId={{row[0]}}" class="btn btn-danger shadow-0" style="float: right;margin-top: -60px;">Remove from
+							cart</a>
+						
+						<hr />
+					</div>
+				</section>
+				{% endfor %}
 			</div>
-			{% endfor %}
-			<hr id="seperator">
-			<div id="total">
-				<span id="subtotal">Subtotal</span> : ${{totalPrice}}
+			<div class="col-md-3">
+				<section class="py-5">
+					{% for row in products %}
+					<div class="d-flex justify-content-between"> 
+						<p class="mb-2">{{row[1]}}</p>
+						<p class="mb-2">${{row[2]}}</p>
+					</div>
+					{% endfor %}
+					
+					<hr id="seperator">
+					<div class="d-flex justify-content-between"> 
+						<p class="mb-2">Subtotal</p>
+						<p class="mb-2">${{subTotal}}</p>
+					</div>
+					<div class="d-flex justify-content-between"> 
+						<p class="mb-2">Shipping</p>
+						<p class="mb-2">$1.99</p>
+					</div>
+					<div class="d-flex justify-content-between"> 
+						<p class="mb-2">Total</p>
+						<p class="mb-2">${{totalPrice}}</p>
+					</div>
+					<a class="btn btn-primary btn-block" href="/checkoutForm">
+						<div class="d-flex justify-content-between">
+						  <span>CHECKOUT</span>
+						  <span>${{totalPrice}}</span>
+						</div>
+					</a>
+					
+				</section>
 			</div>
 		</div>
 	</div>
-	<a href="/checkoutForm">Proceed to checkout</a>
 
 	{% include 'footer.html' %}
 	<!-- Javascript files-->

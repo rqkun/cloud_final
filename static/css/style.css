@@ -902,6 +902,7 @@ button {
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    
 }
 
 .dropdown-content a {
@@ -910,6 +911,7 @@ button {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    
 }
 
 .dropdown-content a:hover {
@@ -992,15 +994,27 @@ button {
     overflow: hidden;
 }
 
+#rcorners2:hover {
+    border-radius: 25px;
+    border: 2px solid #6773ff;
+    padding: 30px;
+    width: calc(25% - 10px);
+    height: 450px;
+    /*margin: auto auto 20px auto*/
+    margin: 0 10px 20px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: 0.2s all ease-out;
+}
+
 #rcorners3 {
     border-radius: 25px;
     border: 2px solid #00085c;
     padding: 30px;
-    width: 500px;
+    width: 350px;
     height: 450px;
     /*margin: auto auto 20px auto*/
-    margin: 0 10px 20px 0;
-    ;
+    margin: 0 10px 20px 10px;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -1022,12 +1036,14 @@ button {
     display: -moz-box;
     display: -ms-flexbox;
     display: -webkit-flex;
-    display: flex;
+    display: block;
     width: 250px;
     height: 200px;
     object-fit: contain;
     border-radius: 25px;
     padding-left: 40%;
+    margin-left: -15%;
+    margin-right: auto;
 }
 
 .shop_bt_3 {
@@ -1081,7 +1097,6 @@ button {
 .user-info-container {
     display: flex;
     align-items: center;
-    /* Align items vertically centered */
 }
 
 .user-info-container i {
@@ -1118,8 +1133,56 @@ button {
 
 .search {
     position: relative;
-    width: 300px;
+    width: 500px;
     height: auto;
     margin-top: 5px;
+    margin-left: 30px;
+    margin-right: 30px;
 
+}
+
+.input-update {
+    width: 100%;
+    border: 1px #000 solid;
+    padding: 5px 5px 5px 15px;
+    position: relative;
+    display: flex;
+    top: 0;
+    left: 0;
+}
+
+.input-update-desc {
+    width: 100%;
+    height: 200px;
+    border: 1px #000 solid;
+    word-wrap: break-word;
+    text-align: left;
+    padding-bottom: 80px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.card-link {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+#info_icon {
+    color: #24292f;
+}
+
+#info_icon:hover {
+    color: #4f99e5;
+}
+
+.col-md-9 {
+    padding-right: 15px;
+}
+
+.col-md-3 {
+    padding-left: 15px;
+    border-left: 1px solid #ddd;
 }
