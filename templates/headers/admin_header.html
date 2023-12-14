@@ -33,6 +33,7 @@
 <body>
 <div class="header_section">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<<<<<<< Updated upstream
         <div class="logo"><a href="{{ url_for('administrator')}}"><img src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -53,6 +54,30 @@
             </li>
           </ul>
         </div>
+=======
+      <div class="logo"><a href="{{ url_for('administrator')}}"><img
+            src="{{ url_for('static', filename='images/logo.png')}}"></a></div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/add">ADD PRODUCT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/updateStock">UPDATE PRODUCT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/remove">REMOVE PRODUCT</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/logout">LOGOUT</a>
+          </li>
+        </ul>
+      </div>
+>>>>>>> Stashed changes
     </nav>
 </div>
     <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>

@@ -57,11 +57,18 @@ def index():
 
 @application.route('/admin')
 def administrator():
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
     loggedIn, firstName, noOfItems = getLoginDetails()
     email = session['email']
     if is_admin(email) == False:
         return redirect(url_for('index'))
+<<<<<<< Updated upstream
     else: return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
+=======
+    else: 
+        return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
+>>>>>>> Stashed changes
 
 # Search
 # DONE
@@ -172,6 +179,11 @@ def addItem():
 # Remove item
 @application.route("/remove")
 def remove():
+<<<<<<< Updated upstream
+=======
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == True:
         loggedIn, firstName, noOfItems = getLoginDetails()
@@ -190,10 +202,19 @@ def remove():
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
         return render_template('remove.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+<<<<<<< Updated upstream
     return redirect(url_for('index'))
 
 @application.route("/productDescriptionForRemove")
 def productDescriptionForRemove():
+=======
+    return redirect(url_for('index')) 
+
+@application.route("/productDescriptionForRemove")
+def productDescriptionForRemove():
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == True:
         loggedIn, firstName, noOfItems = getLoginDetails()
@@ -208,6 +229,11 @@ def productDescriptionForRemove():
 
 @application.route("/removeItem")
 def removeItem():
+<<<<<<< Updated upstream
+=======
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == True:
         productId = request.args.get('removedProductId')
@@ -228,6 +254,11 @@ def removeItem():
 # Update item
 @application.route("/updateStock")
 def updateStock():
+<<<<<<< Updated upstream
+=======
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == True:
         loggedIn, firstName, noOfItems = getLoginDetails()
@@ -248,6 +279,11 @@ def updateStock():
 
 @application.route("/productDescriptionForUpdate")
 def productDescriptionForUpdate():
+<<<<<<< Updated upstream
+=======
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == True:
         loggedIn, firstName, noOfItems = getLoginDetails()
@@ -262,6 +298,11 @@ def productDescriptionForUpdate():
 
 @application.route("/updateProduct", methods=['POST', 'GET'])
 def updateProduct():
+<<<<<<< Updated upstream
+=======
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
+>>>>>>> Stashed changes
     email = session['email']
     if is_admin(email) == False:
         return redirect(url_for('index'))
@@ -340,6 +381,8 @@ def editProfile():
 
 @application.route("/updateProfile", methods=["GET", "POST"])
 def updateProfile():
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
     if request.method == 'POST':
         email = request.form['email']
         firstName = request.form['firstName']
@@ -512,6 +555,8 @@ def checkoutForm():
     #   Tạo Order theo user id, orderId = str(uuid.uuid4())
     #   Tạo Order detail thei orderId và productId
     #   Trừ quantity của product
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
     email = session['email']
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
@@ -537,6 +582,8 @@ def checkoutForm():
 
 @application.route("/checkout", methods = ['GET', 'POST'])
 def checkout():
+    if 'email' not in session:
+        return redirect(url_for('loginForm'))
     if request.method == 'POST':
         email = session['email']
         name = request.form['receiverName']
@@ -618,9 +665,9 @@ def orderDetail():
                     INNER JOIN products ON orderdetail.productId = products.productId \
                     WHERE orderDetail.orderId = %s \
                     AND products.productId = orderDetail.productId", (orderId, ))
+        products = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-        products = cur.fetchall()
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
@@ -694,19 +741,6 @@ def registrationForm():
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-# Can be removed later
-def parse(data):
-    ans = []
-    i = 0
-    while i < len(data):
-        curr = []
-        if i >= len(data):
-            break
-        curr.append(data[i])
-        i += 1
-        ans.append(curr)
-    return ans
 
 
 if __name__ == '__main__':
