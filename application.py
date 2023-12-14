@@ -55,6 +55,19 @@ def index():
     #itemData = parse(itemData)
     return render_template('index.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
+@application.route('/404')
+def not_found():
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC LIMIT 4')
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
+    #itemData = parse(itemData)
+    return render_template('notfound.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
+
+
 @application.route('/admin')
 def administrator():
     if 'email' not in session:
