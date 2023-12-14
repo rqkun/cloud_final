@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>404</title>
+</head>
+
+<body>
+    {% include './headers/header.html' %}
+    <a style="padding: 40px 500px 50px 600px;text-align: center;font-size: 40px;font-weight: 500;" class="game_text"> PAGE NOT FOUND</a>
+    <section style="padding: 0px 500px 100px 500px;">
+        
+    {% include './utils/404.html' %}
+
+    </section>
+    {% include 'footer.html' %}
+    <!-- Javascript files-->
+    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+    <!-- sidebar -->
+    <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+    <!-- javascript -->
+    <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+        })
+    </script>
+</body>
+
+</html>
