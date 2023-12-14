@@ -99,17 +99,34 @@ body {
   border-radius: 30px;
   font-weight: 600;
 }
+.screen-1 .login:hover {
+  background: #528cff;
+}
+.screen-1 .login:hover:focus {
+  background: #528cff;
+}
 .screen-1 .footer {
   display: flex;
-  font-size: 0.7em;
+  font-size: 1em;
   color: #5e5e5e;
   gap: 14em;
-  padding-bottom: 10em;
 }
 .screen-1 .footer span {
   cursor: pointer;
+  display: table;
+  margin: 0 auto;
 }
 
 button {
   cursor: pointer;
+}
+#error-message{
+  font-size: 15px;
+  color: #ed1c24;
+  margin-left: 10px;
+}
+#sucess-message{
+  font-size: 15px;
+  color: #23ee6e;
+  margin-left: 10px;
 }

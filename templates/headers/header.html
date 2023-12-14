@@ -33,8 +33,8 @@
     type='text/css'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
     media="screen">
-  <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -63,7 +63,7 @@
               <span class="nav-link">CATEGORIES</span>
               <div class="dropdown-content">
                 {% for row in categoryData %}
-                <p><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></p>
+                <p><a class="nav-link" href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></p>
                 {% endfor %}
               </div>
             </div>
@@ -86,19 +86,19 @@
             <a class="nav-link" href="/registerationForm">REGISTER</a>
           </li>
           {% else %}
-
-          <div class="dropdown">
-            <span class="nav-link active">USER</span>
+          <li class="nav-item cart-container">
+            <a id = "info_icon" class="fa badge fa-lg" value={{noOfItems}} href="/cart" style="font-size: 25px;">&#xf07a;</a>
+          </li>
+          <div class="dropdown nav-item">
+            <li class="nav-item">
+            <i id = "info_icon" class="fa fa-user-circle" href="/account/profile" style="font-size: 25px;margin-top: 10px;"></i>
+            </li>
             <div class="dropdown-content">
               <a class="nav-link" href="/account/orders">ORDERS</a>
               <a class="nav-link" href="/account/profile">PROFILE</a>
               <a class="nav-link" href="/logout">LOGOUT</a>
             </div>
           </div>
-          <li class="nav-item cart-container">
-            <a class="nav-link" href="/cart">CART</a>
-            <a class="fa badge fa-lg" value={{noOfItems}}>&#xf07a;</a>
-          </li>
           {% endif %}
         </ul>
       </div>
@@ -117,6 +117,7 @@
   <!-- javascript -->
   <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
   <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
   <script>
     $(document).ready(function () {
       $(".fancybox").fancybox({

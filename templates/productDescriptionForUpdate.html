@@ -63,22 +63,22 @@
 				 <form action="/updateProduct?updatedProductId={{data[0]}}" method="post">
 					<div class="mb-3">
 						<span class="text-muted"> New name </span>
-						<input type="text" id="name" name="name" placeholder="New name" size="65">
-					</div>
-					
-					<div class="mb-3">
-						<span class="text-muted"> New description </span>
-						<input type="text" id="description" name="description" placeholder="New description" size="65">
+						<input class="input-update" type="text" id="name" name="name" placeholder="New name" size="65">
 					</div>
 					
 					<div class="mb-3">
 						<span class="text-muted"> New price </span>
-						<input type="text" id="newPrice" name="newPrice" placeholder="00.00" size="65">
+						<input class="input-update" type="text" id="newPrice" name="newPrice" placeholder="00.00" size="65">
 					</div>
 					
 					<div class="mb-3">
 						<span class="text-muted"> Imported quantity </span>
-						<input type="text" id="quantity" name="quantity" placeholder="0" size="65">
+						<input class="input-update" type="text" id="quantity" name="quantity" placeholder="0" size="65">
+					</div>
+
+					<div class="mb-3">
+						<span class="text-muted"> New description </span>
+						<textarea class="input-update" type="text" id="description" name="description" placeholder="New description" size="65"></textarea>
 					</div>
 					
 					<hr />

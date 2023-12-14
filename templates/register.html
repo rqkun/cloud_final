@@ -1,35 +1,109 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <title>Registration</title>
-    <script type="text/javascript" src="{{ url_for('static', filename = 'js/validateForm.js') }}">
-    </script>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet'
+        href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register-style.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
-    <form action="/register" method="POST" onsubmit="return validate()">
-        <p>Email: <input type="email" name="email"></p>
-
-        <P>Password: <input type="password" name="password" id="password" required></p>
-
-        <p>Confirm Password: <input type="password" name="cpassword" id="cpassword"></p>
-
-        <p>First Name: <input type="text" name="firstName"></p>
-        <p>Last Name: <input type="text" name="lastName"></p>
-        <p>Address Line 1: <input type="text" name="address1"></p>
-        <p>Address Line 2: <input type="text" name="address2"></p>
-        <p>Zipcode: <input type="text" name="zipcode"></p>
-        <p>City: <input type="text" name="city"></p>
-        <p>State: <input type="text" name="state"></p>
-        <p>Country: <input type="text" name="country"></p>
-        <p>Phone Number: <input type="text" name="phone"></p>
-
-        <p><input type="submit" value="Register"></p>
-
-        <a href="/loginForm">Login here</a>
+    <form action="/register" method="POST" onsubmit="return validate()" id="registerForm">
+        <div class="form_wrapper">
+            <div class="form_container">
+                <div class="title_container">
+                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1" width="300" height="300" viewbox="0 0 640 480" xml:space="preserve">
+                        <image x="10%" y="10%" width="500" height="500"
+                            xlink:href="{{ url_for('static', filename='images/logo.png')}}" />
+                    </svg>
+                </div>
+                <div class="row clearfix">
+                    <div class="">
+                        <form>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                                <input type="email" name="email" placeholder="Email" required />
+                            </div>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                                <input id ="password" type="password" name="password" placeholder="Password" required />
+                            </div>
+                            <span id ="toggle-eye" toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password" style="float:right;"></span>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                                <input id ="cpassword" type="password" name="password" placeholder="Re-type Password" required />
+                            </div>
+                            <span id ="toggle-eye" toggle="#cpassword" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                            <span name="error-message" id="error-message" hidden>Password must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters</span>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                        <input type="text" name="firstName" placeholder="First Name" />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                        <input type="text" name="lastName" placeholder="Last Name" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-building"></i></span>
+                                <input type="text" name="address1" placeholder="Address Line 1" required />
+                            </div>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-building"></i></span>
+                                <input type="text" name="address2" placeholder="Address Line 2"/>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-anchor"></i></span>
+                                        <input type="text" name="zipcode" placeholder="Zipcode" />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-anchor"></i></span>
+                                        <input type="text" name="city" placeholder="City" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map"></i></span>
+                                        <input type="text" name="state" placeholder="State" />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map"></i></span>
+                                        <input type="text" name="country" placeholder="Country" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-phone"></i></span>
+                                <input type="text" name="phone" placeholder="Phone Number" required />
+                            </div>
+                            <input class="button" type="submit" value="Register" />
+                            
+                        </form>
+                            
+                    </div>
+                    <div id="footer"><span><a>Already have an account ? </a><a href="/loginForm">Login</a></span></div>
+                </div>
+            </div>
+        </div>
     </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/eye-toggle.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/validateForm.js') }}"></script>
 </body>
 
 </html>

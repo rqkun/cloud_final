@@ -1,63 +1,115 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<title>Edit Profile </title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='style/editProfile.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='style/topStyle.css') }}">
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet'
+        href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register-style.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
-	<div id="title">
-		<a href="/">
-			<img id="logo" src="{{ url_for('static', filename='images/logo.png') }}">
-		</a>
-		<form>
-			<input id="searchBox" type="text" name="searchQuery">
-			<input id="searchButton" type="submit" value="Search">
-		</form>
+	<form action="/updateProfile" method="POST" id="editProfileForm">
+        <div class="form_wrapper">
+            <div class="form_container">
+                <div class="title_container">
+                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1" width="50" height="50" viewbox="0 0 640 480" xml:space="preserve">
+                    </svg>
+                    <h1>Edit Profile</h1>
+                </div>
+                <div class="row clearfix">
+                    <div class="">
+                        <form>
+                            <label style="position: relative;" aria-disabled="true">Email:</label>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                                <input type="email" name="email" value={{profileData[1]}} readonly="readonly"/>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">First Name:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                        <input type="text" name="firstName" value={{profileData[2]}} />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">Last Name:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                        <input type="text" name="lastName" value={{profileData[3]}} />
+                                    </div>
+                                </div>
+                            </div>
+                            <label style="position: relative;" aria-disabled="true">Address Line 1:</label>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-building"></i></span>
+                                <input type="text" name="address1" value={{profileData[4]}} required />
+                            </div>
+                            <label style="position: relative;" aria-disabled="true">Address Line 2:</label>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-building"></i></span>
+                                <input type="text" name="address2" value={{profileData[5]}} />
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">Zipcode:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-anchor"></i></span>
+                                        <input type="text" name="zipcode" value={{profileData[6]}} />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">City:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-anchor"></i></span>
+                                        <input type="text" name="city" value={{profileData[7]}} required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">State:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map"></i></span>
+                                        <input type="text" name="state" value={{profileData[8]}} />
+                                    </div>
+                                </div>
+                                <div class="col_half">
+                                    <label style="position: relative;" aria-disabled="true">Country:</label>
+                                    <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map"></i></span>
+                                        <input type="text" name="country" value={{profileData[9]}} required />
+                                    </div>
+                                </div>
+                            </div>
+                            <label style="position: relative;" aria-disabled="true">Phone:</label>
+                            <div class="input_field"> <span><i aria-hidden="true" class="fa fa-phone"></i></span>
+                                <input type="text" name="phone" value={{profileData[10]}} required />
+                            </div>
+							{% if error %}
+      						<span id="error-message">{{ error }}</span>
+      						{% endif %}
+      						{% if msg %}
+      						<span id="success-message">{{ msg }}</span>
+      						{% endif %}
+                            <input class="button" type="submit" value="Save" href="/updateProfile"/>
+                            
+                        </form>
+                            
+                    </div>
+                    <div id="footer"><span><a>Go to </a><a href="{{ url_for('profileHome') }}">Profile</a></span></div>
+                </div>
+            </div>
+        </div>
+    </form>
 
-		{% if not loggedIn %}
-		<div id="signInButton">
-			<a class="link" href="/loginForm">Sign In</a>
-		</div>
-		{% else %}
-		<div class="dropdown">
-			<button class="dropbtn">Hello, <br>{{firstName}}</button>
-			<div class="dropdown-content">
-				<a href="/account/orders">Your orders</a>
-				<a href="/account/profile">Your profile</a>
-				<hr>
-				<a href="/logout">Sign Out</a>
-			</div>
-		</div>
-		{% endif %}
-		<div id="kart">
-			<a class="link" href="/cart">
-				<img src="{{url_for('static', filename='images/shoppingCart.png')}}" id="cartIcon">
-				CART {{noOfItems}}
-			</a>
-		</div>
-	</div>
-
-	<div class="display">
-		<h2>Edit profile</h2>
-		<form action="/updateProfile" method="POST">
-			<p>Email:<input type="email" name="email" value={{profileData[1]}} readonly="readonly"></p>
-			<p>First Name:<input type="text" name="firstName" value={{profileData[2]}}></p>
-			<p>Last Name: <input type="text" name="lastName" value={{profileData[3]}}></p>
-			<p>Address 1: <input type="text" name="address1" value={{profileData[4]}}></p>
-			<p>Address 2: <input type="text" name="address2" value={{profileData[5]}}></p>
-			<p>Zip Code: <input type="text" name="zipcode" value={{profileData[6]}}></p>
-			<p>City: <input type="text" name="city" value={{profileData[7]}}></p>
-			<p>State: <input type="text" name="state" value={{profileData[8]}}></p>
-			<p>Country: <input type="text" name="country" value={{profileData[9]}}></p>
-			<p>Phone Number: <input type="text" name="phone" value={{profileData[10]}}></p>
-			<input type="submit" value="Save" href="/updateProfile">
-		</form>
-	</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/eye-toggle.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'js/validateForm.js') }}"></script>
 </body>
 
 </html>

@@ -48,7 +48,7 @@ def index():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products LIMIT 4')
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC LIMIT 4')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -73,14 +73,16 @@ def search():
     itemName = request.form['searchBox']
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s ORDER BY productId DESC ',('%'+itemName.lower()+'%',))
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
     #itemData = parse(itemData)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -94,15 +96,16 @@ def product():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC ')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
     #itemData = parse(itemData)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
     per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -118,8 +121,6 @@ def about():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     #itemData = parse(itemData)
@@ -181,15 +182,16 @@ def remove():
         loggedIn, firstName, noOfItems = getLoginDetails()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC ')
             itemData = cur.fetchall()
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
         total = len(itemData)
         #itemData = parse(itemData)
 
-        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
-        per_page=16
+        page = int(request.args.get('page', 1))
+        per_page = 16
+        offset = (page - 1) * per_page
         pagination_data = itemData[offset:offset+per_page]
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -243,14 +245,15 @@ def updateProductInfo():
         loggedIn, firstName, noOfItems = getLoginDetails()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC')
             itemData = cur.fetchall()
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
         total = len(itemData)
-
-        page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
-        per_page=16
+        
+        page = int(request.args.get('page', 1))
+        per_page = 16
+        offset = (page - 1) * per_page
         pagination_data = itemData[offset:offset+per_page]
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
         return render_template('updateProductInfo.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
@@ -317,7 +320,7 @@ def displayCategory():
     categoryId = request.args.get("categoryId")
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = %s", (categoryId, ))
+        cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = %s ORDER BY products.productId DESC ", (categoryId, ))
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -325,7 +328,9 @@ def displayCategory():
     conn.close()
     categoryName = itemData[0][4]
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
     #data = parse(data)
@@ -353,6 +358,7 @@ def profileHome():
 def editProfile():
     if 'email' not in session:
         return redirect(url_for('index'))
+    
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
@@ -361,7 +367,11 @@ def editProfile():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     conn.close()
-    return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
+    try:
+        msg = request.args['msg']
+        return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData,msg=msg)
+    except:
+        return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 @application.route("/updateProfile", methods=["GET", "POST"])
 def updateProfile():
@@ -385,11 +395,14 @@ def updateProfile():
 
                     conn.commit()
                     msg = "Saved Successfully"
+                    conn.close()
+                    return redirect(url_for('editProfile', msg=msg))
                 except:
                     conn.rollback()
-                    msg = "Error occured"
-        conn.close()
-        return redirect(url_for('editProfile'))
+                    error = "Database Failure"
+                    conn.close()
+                    return redirect(url_for('editProfile', error=error))
+        
 
 # Change password
 # DONE - redirect to profile page if needed
@@ -400,7 +413,7 @@ def changePassword():
     if request.method == "POST":
         oldPassword = request.form['oldpassword']
         oldPassword = hashlib.md5(oldPassword.encode()).hexdigest()
-        newPassword = request.form['newpassword']
+        newPassword = request.form['password']
         newPassword = hashlib.md5(newPassword.encode()).hexdigest()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
@@ -411,14 +424,17 @@ def changePassword():
                     cur.execute("UPDATE users SET password = %s WHERE userId = %s", (newPassword, userId))
                     conn.commit()
                     msg="Changed successfully"
+                    conn.close()
+                    return render_template("changePassword.html", msg=msg)
                 except:
                     conn.rollback()
-                    msg = "Failed"
-                return render_template("changePassword.html", msg=msg)
+                    conn.close()
+                    error = "Database Failure"
+                return render_template("changePassword.html", error=error)
             else:
-                msg = "Wrong password"
-        conn.close()
-        return render_template("changePassword.html", msg=msg)
+                error = "Wrong password"
+                conn.close()
+                return render_template("changePassword.html", error=error)
     else:
         return render_template("changePassword.html")
 
@@ -444,7 +460,7 @@ def login():
             else: 
                 return redirect(url_for('index'))
         else:
-            error = 'Invalid UserId / Password'
+            error = 'Invalid Email / Password'
             return render_template('login.html', error=error)
 
 # View product detail
@@ -503,7 +519,9 @@ def cart():
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
-    return render_template("cart.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
+    subTotal=totalPrice
+    totalPrice = round(totalPrice+1.99, 2)
+    return render_template("cart.html", products = products, subTotal=subTotal,totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Remove item from cart
 # DONE
@@ -561,6 +579,7 @@ def checkoutForm():
                 redirect(url_for('cart'))
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
+        totalPrice= round(totalPrice+1.99, 2)
     conn.close()
     return render_template("checkout.html", totalPrice=totalPrice,categoryData=categoryData)
 
@@ -617,13 +636,15 @@ def myOrders():
         cur = conn.cursor()
         cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
         userId = cur.fetchone()[0]
-        cur.execute("SELECT orderId, receiverName, shippingAddress, phone FROM orders WHERE userId = %s", (userId, ))
+        cur.execute("SELECT orderId, receiverName, shippingAddress, phone FROM orders WHERE userId = %s ORDER BY orderId DESC", (userId, ))
         orders = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(orders)
 
-    page, per_page, offset = get_page_args(page_parameter="page", per_page_parameter="per_page")
+    page = int(request.args.get('page', 1))
+    per_page = 16
+    offset = (page - 1) * per_page
     pagination_data = orders[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
@@ -655,6 +676,7 @@ def orderDetail():
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
+    totalPrice= round(totalPrice+1.99, 2)
     return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Log out 
@@ -703,20 +725,30 @@ def register():
         state = request.form['state']
         country = request.form['country']
         phone = request.form['phone']
-
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             try:
+
                 cur = conn.cursor()
-                cur.execute('INSERT INTO users (password, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (hashlib.md5(password.encode()).hexdigest(), email, firstName, lastName, address1, address2, zipcode, city, state, country, phone))
-
-                conn.commit()
-
-                msg = "Registered Successfully"
+                
+                cur.execute('SELECT email FROM users WHERE email = %s', (email, ))
+                user = cur.fetchone()
+                if user == None:
+                    cur.execute('INSERT INTO users (password, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (hashlib.md5(password.encode()).hexdigest(), email, firstName, lastName, address1, address2, zipcode, city, state, country, phone))
+                    conn.commit()
+                    conn.close()
+                    msg = "Registered Successfully"
+                    return render_template("login.html", msg=msg)
+                else:
+                    error = "Gmail existed!"
+                    conn.close()
+                    return render_template("login.html", error=error)
             except:
                 conn.rollback()
-                msg = "Error occured"
-        conn.close()
-        return render_template("login.html", error=msg)
+                error = "Error occured"
+                conn.close()
+                return render_template("login.html", error=error)
+     
+        
 
 @application.route("/registerationForm")
 def registrationForm():

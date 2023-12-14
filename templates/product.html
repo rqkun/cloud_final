@@ -44,14 +44,14 @@
             <div class="container">
               <div class="row" id="proRow">
                 {% for row in itemData %}
-                <div id="rcorners2">
-                  <a href="/productDescription?productId={{row[0]}}">
+                <a href="/productDescription?productId={{row[0]}}" id="rcorners2">
+
                     <img style="border-radius: 25px;" src="{{ url_for('static', filename='uploads/' + row[4]) }}"
                       id="itemImage">
-                  </a>
-                  <div class="price_text">$ <span style="color: #3a3a38;">{{row[2]}}</span></div>
-                  <div class="game_text">{{row[1]}}</div>
-                </div>
+
+                    <div class="price_text">$ <span style="color: #3a3a38;">{{row[2]}}</span></div>
+                    <div class="game_text">{{row[1]}}</div>
+                </a>
                 {% endfor %}
               </div>
             </div>
