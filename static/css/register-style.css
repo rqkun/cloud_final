@@ -280,10 +280,11 @@ body {
   font-size: 1em;
   color: #5e5e5e;
   gap: 14em;
-  margin-left: 55px;
 }
 #footer span {
   cursor: pointer;
+  display: table;
+  margin: 0 auto;
 }
 #error-message{
   position: relative;
@@ -293,6 +294,31 @@ body {
   margin-left: 10px;
   margin-top: -10px;
   padding-bottom: 10px;
+}
+#success-message{
+  position: relative;
+  float: left;
+  font-size: 11px;
+  color: #23ee6e;
+  margin-left: 10px;
+  margin-top: -10px;
+  padding-bottom: 10px;
+}
+#descriptionBox{
+  width: 100%;
+  max-width: 350px;
+  min-width: 350px;
+  min-height: 100px;
+  padding: 8px 10px 9px 35px;
+  height: 100px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  border-radius: 10px;
 }
 @-webkit-keyframes check {
   0% {

@@ -48,7 +48,7 @@ def index():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products LIMIT 4')
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC LIMIT 4')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -73,7 +73,7 @@ def search():
     itemName = request.form['searchBox']
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s',('%'+itemName.lower()+'%',))
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products WHERE LOWER(products.name) LIKE %s ORDER BY productId DESC ',('%'+itemName.lower()+'%',))
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -96,7 +96,7 @@ def product():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC ')
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -121,8 +121,6 @@ def about():
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     #itemData = parse(itemData)
@@ -184,7 +182,7 @@ def remove():
         loggedIn, firstName, noOfItems = getLoginDetails()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC ')
             itemData = cur.fetchall()
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
@@ -247,7 +245,7 @@ def updateProductInfo():
         loggedIn, firstName, noOfItems = getLoginDetails()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('SELECT productId, name, price, description, image, stock FROM products')
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC')
             itemData = cur.fetchall()
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
@@ -322,7 +320,7 @@ def displayCategory():
     categoryId = request.args.get("categoryId")
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = %s", (categoryId, ))
+        cur.execute("SELECT products.productId, products.name, products.price, products.image, categories.name FROM products, categories WHERE products.categoryId = categories.categoryId AND categories.categoryId = %s ORDER BY products.productId DESC ", (categoryId, ))
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -360,6 +358,7 @@ def profileHome():
 def editProfile():
     if 'email' not in session:
         return redirect(url_for('index'))
+    
     loggedIn, firstName, noOfItems = getLoginDetails()
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
@@ -368,7 +367,11 @@ def editProfile():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     conn.close()
-    return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
+    try:
+        msg = request.args['msg']
+        return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData,msg=msg)
+    except:
+        return render_template("editProfile.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 @application.route("/updateProfile", methods=["GET", "POST"])
 def updateProfile():
@@ -392,11 +395,14 @@ def updateProfile():
 
                     conn.commit()
                     msg = "Saved Successfully"
+                    conn.close()
+                    return redirect(url_for('editProfile', msg=msg))
                 except:
                     conn.rollback()
-                    msg = "Error occured"
-        conn.close()
-        return redirect(url_for('editProfile'))
+                    error = "Database Failure"
+                    conn.close()
+                    return redirect(url_for('editProfile', error=error))
+        
 
 # Change password
 # DONE - redirect to profile page if needed
@@ -407,7 +413,7 @@ def changePassword():
     if request.method == "POST":
         oldPassword = request.form['oldpassword']
         oldPassword = hashlib.md5(oldPassword.encode()).hexdigest()
-        newPassword = request.form['newpassword']
+        newPassword = request.form['password']
         newPassword = hashlib.md5(newPassword.encode()).hexdigest()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
@@ -418,14 +424,17 @@ def changePassword():
                     cur.execute("UPDATE users SET password = %s WHERE userId = %s", (newPassword, userId))
                     conn.commit()
                     msg="Changed successfully"
+                    conn.close()
+                    return render_template("changePassword.html", msg=msg)
                 except:
                     conn.rollback()
-                    msg = "Failed"
-                return render_template("changePassword.html", msg=msg)
+                    conn.close()
+                    error = "Database Failure"
+                return render_template("changePassword.html", error=error)
             else:
-                msg = "Wrong password"
-        conn.close()
-        return render_template("changePassword.html", msg=msg)
+                error = "Wrong password"
+                conn.close()
+                return render_template("changePassword.html", error=error)
     else:
         return render_template("changePassword.html")
 
@@ -627,7 +636,7 @@ def myOrders():
         cur = conn.cursor()
         cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
         userId = cur.fetchone()[0]
-        cur.execute("SELECT orderId, receiverName, shippingAddress, phone FROM orders WHERE userId = %s", (userId, ))
+        cur.execute("SELECT orderId, receiverName, shippingAddress, phone FROM orders WHERE userId = %s ORDER BY orderId DESC", (userId, ))
         orders = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
@@ -667,6 +676,7 @@ def orderDetail():
     totalPrice = 0
     for row in products:
         totalPrice += row[2]
+    totalPrice= round(totalPrice+1.99, 2)
     return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Log out 

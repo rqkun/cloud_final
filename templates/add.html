@@ -1,26 +1,96 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<title>Admin</title>
+	<meta charset="UTF-8">
+	<title>Add Items</title>
+	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel='stylesheet'
+		href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/register-style.css')}}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
-	<h2>Add items</h2>
-	<form action="/addItem" method="POST" enctype="multipart/form-data">
-		Name: <input type="text" name="name"><br>
-		Price: <input type="text" name="price"><br>
-		Description: <textarea name="description" rows=3 cols="40"></textarea><br>
-		Image: <input type="file" name="image"><br>
-		Stock: <input type="text" name="stock"><br>
-		Category: <select name="category">
-			{% for row in categories %}
-			<option value="{{row[0]}}">{{row[1]}}</option>
-			{% endfor %}
-		</select><br>
-		<input type="submit">
+	<form action="/addItem" method="POST" id="addItemForm" enctype="multipart/form-data">
+		<div class="form_wrapper">
+			<div class="form_container">
+				<div class="title_container">
+					<svg class="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1" width="150" height="150" viewbox="0 0 640 480" xml:space="preserve">
+                        <image x="10%" y="10%" width="500" height="500"
+                            xlink:href="{{ url_for('static', filename='images/add.png')}}" />
+                    </svg>
+					<h1>Add Items</h1>
+				</div>
+				<div class="row clearfix">
+					<div class="">
+						<form>
+							<label style="position: relative;" aria-disabled="true">Name:</label>
+							<div class="input_field"> 
+								<span><i aria-hidden="true" class="fa fa-edit"></i></span>
+								<input type="text" name="name" placeholder="RGB..." required />
+							</div>
+							<div class="row clearfix">
+								<div class="col_half">
+									<label style="position: relative;" aria-disabled="true">Price:</label>
+									<div class="input_field"> <span><i aria-hidden="true"
+												class="fa fa-money"></i></span>
+										<input type="text" name="price" placeholder="100.00" required />
+									</div>
+								</div>
+								<div class="col_half">
+									<label style="position: relative;" aria-disabled="true">Stock:</label>
+									<div class="input_field"> <span><i aria-hidden="true"
+												class="fa fa-cubes"></i></span>
+										<input type="text" name="stock" placeholder="100" required />
+									</div>
+								</div>
+							</div>
+							<div class="input_field"> 
+								<label style="position: relative;" aria-disabled="true">Select Image:</label>
+
+								<input type="file" name="image">
+							</div>
+							<div class="input_field select_option">
+								<label style="position: relative;" aria-disabled="true">Select Category:</label>
+								<select name="category">
+									{% for row in categories %}
+									<option value="{{row[0]}}">{{row[1]}}</option>
+									{% endfor %}
+								</select>
+								<div class="select_arrow" style="margin-top: 10px;"></div>
+							</div>
+							<label style="position: relative;" aria-disabled="true">Description:</label>
+							<div class="input_field"> <span><i aria-hidden="true" class="fa fa-book"></i></span>
+
+								<textarea type="text" id="descriptionBox" name="description" required></textarea>
+							</div>
+
+
+
+							<input class="button" type="submit" value="Add Product"/>
+
+						</form>
+
+					</div>
+					<div id="footer"><span><a>Go to </a><a href="/admin">Admin</a></span></div>
+				</div>
+			</div>
+		</div>
 	</form>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
+	<script src="{{ url_for('static', filename='js/eye-toggle.js')}}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename = 'js/validateForm.js') }}"></script>
 </body>
 
 </html>

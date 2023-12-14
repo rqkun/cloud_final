@@ -107,14 +107,14 @@ body {
 }
 .screen-1 .footer {
   display: flex;
-  font-size: 0.7em;
+  font-size: 1em;
   color: #5e5e5e;
   gap: 14em;
-  padding-bottom: 10em;
-  margin-left: 50px;
 }
 .screen-1 .footer span {
   cursor: pointer;
+  display: table;
+  margin: 0 auto;
 }
 
 button {
@@ -127,6 +127,6 @@ button {
 }
 #sucess-message{
   font-size: 15px;
-  color: #3ee5ff;
+  color: #23ee6e;
   margin-left: 10px;
 }

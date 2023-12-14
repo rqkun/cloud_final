@@ -36,15 +36,15 @@
 <body>
   {% include './headers/header.html' %}
   <!-- product section start -->
-  <div class="content">
+  <div class="content" >
     <div id="productMain">
-      <div class="container">
+      <div class="container" style="margin: 10px auto;">
         {{pagination.links}}
         {% for row in orders %}
         <div class="row">
-          <a href="/orderDetail?orderId={{row[0]}}">
-            <div class="price_text"><span style="color: #3a3a38;">{{row[1]}}</span></div>
-            <div class="game_text">{{row[0]}}</div>
+          <a href="/orderDetail?orderId={{row[0]}}" id="rcorners4">
+            <div class="price_text"><span style="color: #3a3a38;">{{row[1]}} | {{row[3]}}</span> </div>
+            <div class="game_text">{{row[2]}}</div>
           </a>
         </div>
         {% endfor %}
