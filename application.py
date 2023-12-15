@@ -749,6 +749,16 @@ def register():
                 return render_template("login.html", error=error)
      
         
+@application.errorhandler(404)
+def page_not_found(e):
+    loggedIn, firstName, noOfItems = getLoginDetails()
+    with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC LIMIT 4')
+        itemData = cur.fetchall()
+        cur.execute('SELECT categoryId, name FROM categories')
+        categoryData = cur.fetchall()
+    return render_template('notfound.html' , itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData), 404
 
 @application.route("/registerationForm")
 def registrationForm():

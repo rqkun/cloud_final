@@ -28,7 +28,6 @@
 	 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
 	 <!-- owl stylesheets -->
 	 <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
-	 <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
 	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
 		 media="screen">
  </head>
@@ -101,7 +100,6 @@
 	 <script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
 	 <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
 	 <!-- javascript -->
-	 <script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
 	 <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 	 <script>
 		 $(document).ready(function () {
@@ -114,96 +112,3 @@
  </body>
  
 </html>
-
-<!-- 
-<!DOCTYPE HTML>
-<html>
-	<head>
-
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-
-		<title>Details</title>
-		<meta name="keywords" content="">
-		<meta name="description" content="">
-		<meta name="author" content="">	
-
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}">
-
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css')}}">
-
-		<link rel="icon" href="{{ url_for('static', filename='images/fevicon.png')}}" type="image/gif" />
-
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.mCustomScrollbar.min.css')}}">
-
-		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css')}}">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css')}}">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-		</head>
-<body>
-{% include './headers/admin_header.html' %}
-<div id="display">
-	<div id="productName">
-		<h1>{{data[1]}}</h1>
-	</div>
-	<div>
-		<img src="{{url_for('static', filename='uploads/'+data[4]) }}" id="productImage">
-	</div>
-
-	<div id="productDescription">
-		<h2>Details</h2>
-		<table id="descriptionTable">
-			<tr>
-				<td>Name</td>
-				<td>{{data[1]}}</td>
-			</tr>
-			<tr>
-				<td>Price</td>
-				<td>${{data[2]}}</td>
-			</tr>
-			<tr>
-				<td>Stock</td>
-				<td>{{data[5]}}</td>
-			</tr>
-		</table>
-		<h2>Description</h2>
-		<p>{{data[3]}}</p>
-		<form action="/updateProduct?updatedProductId={{data[0]}}" method="post">
-			<input type="text" id="firstname" name="quantity" placeholder="Quantity">
-			<button type="submit" href="/updateProduct?updatedProductId={{data[0]}}">Add</button>
-		</form>
-		
-	</div>
-</div>
-{% include 'footer.html' %}
-
-<script src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
-<script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{ url_for('static', filename='js/jquery-3.0.0.min.js')}}"></script>
-<script src="{{ url_for('static', filename='js/plugin.js')}}"></script>
-
-<script src="{{ url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
-<script src="{{ url_for('static', filename='js/custom.js')}}"></script>
-
-<script src="{{ url_for('static', filename='js/owl.carousel.js')}}"></script>
-<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-<script>
-  $(document).ready(function(){
-  $(".fancybox").fancybox({
-	  openEffect: "none",
-	  closeEffect: "none"
-	  });})
-</script>
-</body>
-</html>
-
- -->
