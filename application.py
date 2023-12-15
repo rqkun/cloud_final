@@ -75,7 +75,7 @@ def administrator():
     loggedIn, firstName, noOfItems = getLoginDetails()
     email = session['email']
     if is_admin(email) == False:
-        return redirect(url_for('index'))
+        return redirect(url_for('not_found'))
     else: return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
 # Search
@@ -151,7 +151,7 @@ def addProduct():
             categories = cur.fetchall()
         conn.close()
         return render_template('add.html', categories=categories)
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 @application.route("/addItem", methods=["GET", "POST"])
 def addItem():
@@ -181,9 +181,8 @@ def addItem():
                     msg="error occured"
                     conn.rollback()
             conn.close()
-            print(msg)
             return redirect(url_for('administrator'))
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 # Remove item
 @application.route("/remove")
@@ -195,7 +194,7 @@ def remove():
         loggedIn, firstName, noOfItems = getLoginDetails()
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
-            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC ')
+            cur.execute('SELECT productId, name, price, description, image, stock FROM products ORDER BY productId DESC')
             itemData = cur.fetchall()
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
@@ -209,7 +208,7 @@ def remove():
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
 
         return render_template('remove.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
-    return redirect(url_for('index')) 
+    return redirect(url_for('not_found')) 
 
 @application.route("/productDescriptionForRemove")
 def productDescriptionForRemove():
@@ -225,7 +224,7 @@ def productDescriptionForRemove():
             productData = cur.fetchone()
         conn.close()
         return render_template("productDescriptionForRemove.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 @application.route("/removeItem")
 def removeItem():
@@ -244,9 +243,8 @@ def removeItem():
                 conn.rollback()
                 msg = "Error occured"
         conn.close()
-        print(msg)
         return redirect(url_for('remove'))
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 # Update item
 @application.route("/updateProductInfo")
@@ -270,7 +268,7 @@ def updateProductInfo():
         pagination_data = itemData[offset:offset+per_page]
         pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
         return render_template('updateProductInfo.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 @application.route("/productDescriptionForUpdate")
 def productDescriptionForUpdate():
@@ -286,16 +284,14 @@ def productDescriptionForUpdate():
             productData = cur.fetchone()
         conn.close()
         return render_template("productDescriptionForUpdate.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems)
-    return redirect(url_for('index'))
+    return redirect(url_for('not_found'))
 
 @application.route("/updateProduct", methods=['POST', 'GET'])
 def updateProduct():
     if 'email' not in session:
         return redirect(url_for('loginForm'))
     email = session['email']
-    if is_admin(email) == False:
-        return redirect(url_for('index'))
-    else:
+    if is_admin(email) == True:
         if request.method == 'POST':
             productId = request.args.get('updatedProductId')
             newName = request.form['name']
@@ -318,12 +314,12 @@ def updateProduct():
                     cur.execute('UPDATE products SET name = %s, description = %s, price = %s, stock = %s WHERE productId = %s', (newName, newDesc, newPrice, productData[3] + int(importedQuant), productId))
                     conn.commit()
                     msg = "Update successsfully"
-                    print(msg)
                 except:
                     conn.rollback()
                     msg = "Error occured"
             conn.close()
         return redirect(url_for('updateProductInfo'))
+    return redirect(url_for('not_found'))
 
 # Display item by category
 # DONE
@@ -562,14 +558,6 @@ def removeFromCart():
 # DONE
 @application.route("/checkoutForm")
 def checkoutForm():
-    # Lấy id user /
-    # Lấy id product /
-    # Nếu quantity product = 0 -> báo lỗi /
-    # Else:
-    #   Hiện form checkout: Tên. SDT. Address. 
-    #   Tạo Order theo user id, orderId = str(uuid.uuid4())
-    #   Tạo Order detail thei orderId và productId
-    #   Trừ quantity của product
     if 'email' not in session:
         return redirect(url_for('loginForm'))
     email = session['email']
@@ -606,7 +594,6 @@ def checkout():
         address = request.form['receiverAddress']
         phone = request.form['phone']
         orderId = str(uuid.uuid4())
-        print(len(orderId))
         
         with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
             cur = conn.cursor()
@@ -621,6 +608,11 @@ def checkout():
                 cur.execute("SELECT productId FROM cart WHERE userId = %s", (userId, ))
                 cart = cur.fetchall()
                 for row in cart:
+                    cur.execute("SELECT stock FROM products WHERE productId = %s", (row[0], ))
+                    productCurrentStock = cur.fetchone()[0]
+                    cur.execute("UPDATE products SET stock = %s WHERE productId = %s", (productCurrentStock-1, row[0]))
+                    conn.commit()
+
                     cur.execute('INSERT INTO orderdetail (orderId, productId) VALUES (%s, %s)', (orderId, row[0]))
                     conn.commit()
 
@@ -633,14 +625,12 @@ def checkout():
                 conn.rollback()
                 msg = "Error occured"
         conn.close()
-        print(msg)
         return redirect(url_for("product"))
 
 # My orders
 # DONE
 @application.route("/account/orders")
 def myOrders():
-    # Lấy toàn bộ orders theo userId
     if 'email' not in session:
         return redirect(url_for('loginForm'))
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -667,8 +657,6 @@ def myOrders():
 # DONE
 @application.route("/orderDetail")
 def orderDetail():
-    # Nhận orderId
-    # Lấy toàn bộ details theo orderId
     if 'email' not in session:
         return redirect(url_for('loginForm'))
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -725,8 +713,7 @@ def is_admin(email):
 # DONE
 @application.route("/register", methods = ['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        #Parse form data    
+    if request.method == 'POST':  
         password = request.form['password']
         email = request.form['email']
         firstName = request.form['firstName']
@@ -770,7 +757,6 @@ def registrationForm():
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
 
 if __name__ == '__main__':
     application.run(host='0.0.0.0', port=80, debug=True)
