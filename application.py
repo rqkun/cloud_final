@@ -12,7 +12,6 @@ application = Flask(__name__,static_url_path='/static')
 application.static_folder = 'static'
 
 # A secret key that will be used for securely signing the session cookie and can be used for any other security related needs by extensions or your application. 
-# It should be a long random bytes or str. For example, copy the output of this to your config:
 application.secret_key = '!1@2#3$4%5^6&7*8(9)0aswdfzxcvbnhgtynm'
 
 UPLOAD_FOLDER = 'static/uploads'
@@ -22,7 +21,6 @@ CONN_USER = "aa2631_shopdb"
 CONN_PASSWORD = "12345asd"
 CONN_DATABASE = "db_aa2631_shopdb"
 
-# The config is actually a subclass of a dictionary and can be modified just like any dictionary
 application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def getLoginDetails():
@@ -42,7 +40,6 @@ def getLoginDetails():
     return (loggedIn, firstName, noOfItems)
 
 # Main page
-# DONE
 @application.route('/')
 def index():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -52,7 +49,6 @@ def index():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    #itemData = parse(itemData)
     return render_template('index.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
 @application.route('/404')
@@ -64,7 +60,6 @@ def not_found():
         itemData = cur.fetchall()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    #itemData = parse(itemData)
     return render_template('notfound.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData) 
 
 
@@ -79,7 +74,6 @@ def administrator():
     else: return render_template('admin.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems) 
 
 # Search
-# DONE
 @application.route('/search', methods=['POST'])
 def search():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -91,7 +85,6 @@ def search():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
-    #itemData = parse(itemData)
 
     page = int(request.args.get('page', 1))
     per_page = 16
@@ -102,8 +95,6 @@ def search():
     return render_template('searchResult.html', itemData=pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData = categoryData)
 
 # View product
-# DONE
-# With paging
 @application.route('/product')
 def product():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -114,7 +105,6 @@ def product():
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
     total = len(itemData)
-    #itemData = parse(itemData)
 
     page = int(request.args.get('page', 1))
     per_page = 16
@@ -128,7 +118,6 @@ def product():
 def home():
     return redirect("/")
 
-# Dunno
 @application.route('/about')
 def about():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -136,11 +125,9 @@ def about():
         cur = conn.cursor()
         cur.execute('SELECT categoryId, name FROM categories')
         categoryData = cur.fetchall()
-    #itemData = parse(itemData)
     return render_template('about.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData = categoryData) 
 
 # Add item
-# DONE
 @application.route("/add")
 def addProduct():
     email = session['email']
@@ -176,9 +163,7 @@ def addItem():
                     cur = conn.cursor()
                     cur.execute('''INSERT INTO products (name, price, description, image, stock, categoryId) VALUES (%s, %s, %s, %s, %s, %s)''', (name, price, description, imagename, stock, categoryId))
                     conn.commit()
-                    msg="added successfully"
                 except:
-                    msg="error occured"
                     conn.rollback()
             conn.close()
             return redirect(url_for('administrator'))
@@ -199,7 +184,6 @@ def remove():
             cur.execute('SELECT categoryId, name FROM categories')
             categoryData = cur.fetchall()
         total = len(itemData)
-        #itemData = parse(itemData)
 
         page = int(request.args.get('page', 1))
         per_page = 16
@@ -238,10 +222,8 @@ def removeItem():
                 cur = conn.cursor()
                 cur.execute('DELETE FROM products WHERE productID = %s', (productId, ))
                 conn.commit()
-                msg = "Deleted successsfully"
             except:
                 conn.rollback()
-                msg = "Error occured"
         conn.close()
         return redirect(url_for('remove'))
     return redirect(url_for('not_found'))
@@ -313,16 +295,13 @@ def updateProduct():
                         importedQuant = 0
                     cur.execute('UPDATE products SET name = %s, description = %s, price = %s, stock = %s WHERE productId = %s', (newName, newDesc, newPrice, productData[3] + int(importedQuant), productId))
                     conn.commit()
-                    msg = "Update successsfully"
                 except:
                     conn.rollback()
-                    msg = "Error occured"
             conn.close()
         return redirect(url_for('updateProductInfo'))
     return redirect(url_for('not_found'))
 
 # Display item by category
-# DONE
 @application.route("/displayCategory")
 def displayCategory():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -342,11 +321,9 @@ def displayCategory():
     offset = (page - 1) * per_page
     pagination_data = itemData[offset:offset+per_page]
     pagination = Pagination(page=page,per_page=per_page,total=total,css_framework='bootstrap4')
-    #data = parse(data)
     return render_template('displayCategory.html', itemData=pagination_data, categoryData=categoryData, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryName=categoryName)
 
 # View profile
-# DONE
 @application.route("/account/profile")
 def profileHome():
     if 'email' not in session:
@@ -362,7 +339,6 @@ def profileHome():
     return render_template("profileHome.html", profileData=profileData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Update profile
-# DONE
 @application.route("/account/profile/edit")
 def editProfile():
     if 'email' not in session:
@@ -414,7 +390,6 @@ def updateProfile():
         
 
 # Change password
-# DONE - redirect to profile page if needed
 @application.route("/account/profile/changePassword", methods=["GET", "POST"])
 def changePassword():
     if 'email' not in session:
@@ -449,7 +424,6 @@ def changePassword():
 
 # Login
 # Admin: admin@admin.com   -   12345asd
-# DONE
 @application.route("/loginForm")
 def loginForm():
     if 'email' in session:
@@ -473,7 +447,6 @@ def login():
             return render_template('login.html', error=error)
 
 # View product detail
-# DONE
 @application.route("/productDescription")
 def productDescription():
     loggedIn, firstName, noOfItems = getLoginDetails()
@@ -488,7 +461,6 @@ def productDescription():
     return render_template("productDescription.html", data=productData, loggedIn = loggedIn, firstName = firstName, noOfItems = noOfItems,categoryData=categoryData)
 
 # Add item to cart
-# DONE
 @application.route("/addToCart")
 def addToCart():
     if 'email' not in session:
@@ -502,15 +474,12 @@ def addToCart():
             try:
                 cur.execute("INSERT INTO cart (userId, productId) VALUES (%s, %s)", (userId, productId))
                 conn.commit()
-                msg = "Added successfully"
             except:
                 conn.rollback()
-                msg = "Error occured"
         conn.close()
         return redirect(url_for('product'))
 
 # View your cart
-# DONE
 @application.route("/cart")
 def cart():
     if 'email' not in session:
@@ -533,7 +502,6 @@ def cart():
     return render_template("cart.html", products = products, subTotal=subTotal,totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Remove item from cart
-# DONE
 @application.route("/removeFromCart")
 def removeFromCart():
     if 'email' not in session:
@@ -547,15 +515,12 @@ def removeFromCart():
         try:
             cur.execute("DELETE FROM cart WHERE userId = %s AND productId = %s", (userId, productId))
             conn.commit()
-            msg = "removed successfully"
         except:
             conn.rollback()
-            msg = "error occured"
     conn.close()
     return redirect(url_for('cart'))
 
 # Checkout
-# DONE
 @application.route("/checkoutForm")
 def checkoutForm():
     if 'email' not in session:
@@ -619,16 +584,12 @@ def checkout():
                 # Remove user cart
                 cur.execute('DELETE FROM cart WHERE userId = %s', (userId, ))
                 conn.commit()
-
-                msg = "Checkout Successfully"
             except:
                 conn.rollback()
-                msg = "Error occured"
         conn.close()
         return redirect(url_for("product"))
 
 # My orders
-# DONE
 @application.route("/account/orders")
 def myOrders():
     if 'email' not in session:
@@ -654,18 +615,14 @@ def myOrders():
     return render_template("myOrders.html", orders = pagination_data, page=page, per_page=per_page, pagination=pagination, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData)
 
 # Order detail
-# DONE
 @application.route("/orderDetail")
 def orderDetail():
     if 'email' not in session:
         return redirect(url_for('loginForm'))
     loggedIn, firstName, noOfItems = getLoginDetails()
     orderId = request.args.get('orderId')
-    #email = session['email']
     with mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE) as conn:
         cur = conn.cursor()
-        """ cur.execute("SELECT userId FROM users WHERE email = %s", (email, ))
-        userId = cur.fetchone()[0] """
         cur.execute("SELECT orders.orderId, products.name, products.price, products.image, orders.receiverName, orders.shippingAddress, orders.phone \
                     FROM orders INNER JOIN orderDetail ON orders.orderId = orderdetail.orderId \
                     INNER JOIN products ON orderdetail.productId = products.productId \
@@ -681,14 +638,12 @@ def orderDetail():
     return render_template("orderDetail.html", products = products, totalPrice=totalPrice, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems,categoryData=categoryData)
 
 # Log out 
-# DONE
 @application.route("/logout")
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
 
 # Check account
-# DONE
 def is_valid(email, password):
     con = mysql.connector.connect(host=CONN_HOST,user=CONN_USER,password=CONN_PASSWORD, database=CONN_DATABASE)
     cur = con.cursor()
@@ -710,7 +665,6 @@ def is_admin(email):
     return False
 
 # Create new account
-# DONE
 @application.route("/register", methods = ['GET', 'POST'])
 def register():
     if request.method == 'POST':  
