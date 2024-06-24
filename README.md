@@ -1,3 +1,3 @@
-
-README.md | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+# Flask Ecomerce Application (Python >= 3.8)
+## Descriptions:
+cloud computing final project, deployed on aws beanstalk.
